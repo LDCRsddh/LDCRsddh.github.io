@@ -2663,24 +2663,44 @@ main::-webkit-scrollbar{
   function updateCustomScrollbar() {
     if (!scrollbarEl || !scrollbarThumb) return;
 
-    /* 只在 SHOW 页显示 */
-    if (currentName !== 'show') {
+    /* SHOW / DOC / DROP 三页都显示滚动条 */
+    var showPages = ['show', 'doc', 'drop'];
+    if (showPages.indexOf(currentName) === -1) {
       scrollbarEl.classList.remove('show');
+      scrollbarEl.style.bottom = '';
       return;
     }
 
     var scrollH = mainEl.scrollHeight;
     var clientH = mainEl.clientHeight;
 
-    /* 内容不足一屏，不需要滚动条 */
     if (scrollH <= clientH + 2) {
       scrollbarEl.classList.remove('show');
+      scrollbarEl.style.bottom = '';
       return;
     }
+
+    /* 用当前页的内容底边定位滚动条末端，而不是固定的底部 */
+    var bottomOffset = 40;
+    var activePage = document.querySelector('.page.active');
+    if (activePage) {
+      var pageRect = activePage.getBoundingClientRect();
+      var cs = getComputedStyle(activePage);
+      var padBottom = parseFloat(cs.paddingBottom) || 0;
+      /* 内容底边 = page 底边 - padding-bottom */
+      var contentBottom = pageRect.bottom - padBottom;
+      var gap = window.innerHeight - contentBottom;
+      /* gap > 0：内容底边已经进入视口，滚动条跟着上移；
+         gap <= 0：内容还在下方，滚动条到底 */
+      bottomOffset = Math.max(gap + 24, 40);
+    }
+    scrollbarEl.style.bottom = bottomOffset + 'px';
 
     scrollbarEl.classList.add('show');
 
     var trackH = scrollbarEl.clientHeight;
+    if (trackH <= 0) return;
+
     var thumbH = Math.max(36, Math.round(trackH * (clientH / scrollH)));
     var maxThumbTop = trackH - thumbH;
 
