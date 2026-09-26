@@ -1,12 +1,47 @@
 # =====================================================
 #  push.ps1
-#  One-click git add / commit / push
+#  One-click git add / commit / push  (with retry)
 # =====================================================
 
 $ErrorActionPreference = 'Continue'
 
+# ---------- retry config ----------
+$MaxPushAttempts = 5      # 最大重试次数
+$RetryBaseDelay  = 5      # 基础等待秒数（第 n 次失败后等待 n * BaseDelay）
+
 $Root = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
 Set-Location $Root
+
+# ---------- helper: push with retry ----------
+function Invoke-GitPushWithRetry {
+    param(
+        [string[]]$PushArgs = @(),
+        [int]$MaxAttempts = $script:MaxPushAttempts,
+        [int]$BaseDelay   = $script:RetryBaseDelay
+    )
+
+    for ($i = 1; $i -le $MaxAttempts; $i++) {
+        $argText = if ($PushArgs.Count -gt 0) { ($PushArgs -join ' ') } else { '' }
+        if ($argText) {
+            Write-Host ("  > git push {0}  [{1}/{2}]" -f $argText, $i, $MaxAttempts) -ForegroundColor DarkGray
+        } else {
+            Write-Host ("  > git push  [{0}/{1}]" -f $i, $MaxAttempts) -ForegroundColor DarkGray
+        }
+
+        git push @PushArgs
+
+        if ($LASTEXITCODE -eq 0) {
+            return $true
+        }
+
+        if ($i -lt $MaxAttempts) {
+            $wait = $BaseDelay * $i
+            Write-Host ("  push failed (exit {0}), retry in {1}s..." -f $LASTEXITCODE, $wait) -ForegroundColor Yellow
+            Start-Sleep -Seconds $wait
+        }
+    }
+    return $false
+}
 
 # ---------- check git repo ----------
 if (-not (Test-Path (Join-Path $Root '.git'))) {
@@ -50,13 +85,13 @@ if ($statusLines.Count -eq 0) {
             $ans = Read-Host "  Push now? (y/n)"
             if ($ans -eq 'y' -or $ans -eq 'Y') {
                 Write-Host ""
-                git push
-                if ($LASTEXITCODE -eq 0) {
+                $ok = Invoke-GitPushWithRetry
+                if ($ok) {
                     Write-Host ""
                     Write-Host "  Push done" -ForegroundColor Green
                 } else {
                     Write-Host ""
-                    Write-Host "  Push failed" -ForegroundColor Red
+                    Write-Host "  Push failed after all retries" -ForegroundColor Red
                 }
             }
         }
@@ -95,19 +130,16 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# ---------- git push ----------
-Write-Host "  > git push" -ForegroundColor DarkGray
-if ($hasUpstream) {
-    git push
-} else {
-    git push -u origin $branch
-}
+# ---------- git push (with retry) ----------
+$pushArgs = if ($hasUpstream) { @() } else { @('-u', 'origin', $branch) }
+$ok = Invoke-GitPushWithRetry -PushArgs $pushArgs
 
-if ($LASTEXITCODE -eq 0) {
+if ($ok) {
     Write-Host ""
     Write-Host "  Done" -ForegroundColor Green
 } else {
     Write-Host ""
-    Write-Host "  Push failed. Check network or repo credentials." -ForegroundColor Red
-    Write-Host "  (First time: configure SSH key or GitHub login)" -ForegroundColor DarkGray
+    Write-Host "  Push failed after all retries." -ForegroundColor Red
+    Write-Host "  Check network or repo credentials." -ForegroundColor DarkGray
+    Write-Host "  Tip: try SSH remote or set 'git config --global http.postBuffer 524288000'" -ForegroundColor DarkGray
 }
