@@ -177,6 +177,16 @@ main{
   overflow-x:hidden;
   padding: 0 max(8vw, 42px);
   scroll-behavior:smooth;
+
+  /* 隐藏原生滚动条 */
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+
+main::-webkit-scrollbar{
+  display:none;
+  width:0;
+  height:0;
 }
 
 .page{
@@ -450,6 +460,55 @@ main{
   padding:1px 5px;
   border:1px solid var(--line);
   background:var(--panel);
+}
+
+/* ===== 自定义滚动条（仅 SHOW 页显示） ===== */
+.custom-scrollbar{
+  position:fixed;
+  top:120px;
+  right:16px;
+  bottom:80px;
+  width:4px;
+  z-index:35;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .35s ease;
+}
+.custom-scrollbar.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.custom-scrollbar-thumb{
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:40px;
+  background:rgba(255,255,255,.14);
+  border-radius:2px;
+  cursor:grab;
+  transition:background .2s ease, width .2s ease;
+  will-change:transform;
+}
+.custom-scrollbar-thumb:hover,
+.custom-scrollbar-thumb.dragging{
+  background:var(--accent);
+  cursor:grabbing;
+}
+
+.custom-scrollbar:hover .custom-scrollbar-thumb{
+  width:6px;
+}
+
+@media (max-width:680px){
+  .custom-scrollbar{
+    right:8px;
+    top:100px;
+    bottom:60px;
+    width:3px;
+  }
+  .custom-scrollbar:hover .custom-scrollbar-thumb{ width:5px; }
 }
 
 /* ===== DROP 提示 ===== */
@@ -1059,6 +1118,11 @@ main{
   </section>
 
 </main>
+
+<!-- 自定义滚动条 -->
+<div class="custom-scrollbar" id="custom-scrollbar">
+  <div class="custom-scrollbar-thumb" id="custom-scrollbar-thumb"></div>
+</div>
 
 <!-- 全屏展示 -->
 <div class="lightbox" id="lightbox">
@@ -2517,6 +2581,119 @@ main{
   }
 
     /* =====================================================
+   *   自定义滚动条（仅 SHOW 页显示）
+   * ===================================================== */
+  var scrollbarEl = null;
+  var scrollbarThumb = null;
+  var scrollbarDragging = false;
+  var scrollbarStartY = 0;
+  var scrollbarStartScrollTop = 0;
+
+  function initCustomScrollbar() {
+    scrollbarEl = $('#custom-scrollbar');
+    scrollbarThumb = $('#custom-scrollbar-thumb');
+    if (!scrollbarEl || !scrollbarThumb) return;
+
+    scrollbarThumb.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      scrollbarDragging = true;
+      scrollbarStartY = e.clientY;
+      scrollbarStartScrollTop = mainEl.scrollTop;
+      scrollbarThumb.classList.add('dragging');
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!scrollbarDragging) return;
+
+      var trackH = scrollbarEl.clientHeight;
+      var thumbH = scrollbarThumb.offsetHeight;
+      var maxThumbTop = trackH - thumbH;
+      if (maxThumbTop <= 0) return;
+
+      var scrollH = mainEl.scrollHeight;
+      var clientH = mainEl.clientHeight;
+      var maxScroll = scrollH - clientH;
+      if (maxScroll <= 0) return;
+
+      var dy = e.clientY - scrollbarStartY;
+      var scrollDelta = dy * (maxScroll / maxThumbTop);
+      mainEl.scrollTop = scrollbarStartScrollTop + scrollDelta;
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (!scrollbarDragging) return;
+      scrollbarDragging = false;
+      scrollbarThumb.classList.remove('dragging');
+      document.body.style.userSelect = '';
+    });
+
+    /* 点击轨道空白处：跳转到对应位置 */
+    scrollbarEl.addEventListener('click', function (e) {
+      if (e.target === scrollbarThumb) return;
+
+      var rect = scrollbarEl.getBoundingClientRect();
+      var clickRatio = (e.clientY - rect.top) / rect.height;
+
+      var scrollH = mainEl.scrollHeight;
+      var clientH = mainEl.clientHeight;
+      var maxScroll = scrollH - clientH;
+      if (maxScroll <= 0) return;
+
+      mainEl.scrollTop = clickRatio * maxScroll - clientH / 2;
+    });
+
+    mainEl.addEventListener('scroll', updateCustomScrollbar, { passive: true });
+    window.addEventListener('resize', updateCustomScrollbar);
+
+    /* 内容尺寸变化时也刷新（图片懒加载后高度会变） */
+    if (window.ResizeObserver) {
+      var target = $('#show-content');
+      if (target) {
+        var ro = new ResizeObserver(function () { updateCustomScrollbar(); });
+        ro.observe(target);
+      }
+    }
+
+    updateCustomScrollbar();
+  }
+
+  function updateCustomScrollbar() {
+    if (!scrollbarEl || !scrollbarThumb) return;
+
+    /* 只在 SHOW 页显示 */
+    if (currentName !== 'show') {
+      scrollbarEl.classList.remove('show');
+      return;
+    }
+
+    var scrollH = mainEl.scrollHeight;
+    var clientH = mainEl.clientHeight;
+
+    /* 内容不足一屏，不需要滚动条 */
+    if (scrollH <= clientH + 2) {
+      scrollbarEl.classList.remove('show');
+      return;
+    }
+
+    scrollbarEl.classList.add('show');
+
+    var trackH = scrollbarEl.clientHeight;
+    var thumbH = Math.max(36, Math.round(trackH * (clientH / scrollH)));
+    var maxThumbTop = trackH - thumbH;
+
+    var maxScroll = scrollH - clientH;
+    var ratio = maxScroll > 0 ? (mainEl.scrollTop / maxScroll) : 0;
+    ratio = Math.max(0, Math.min(1, ratio));
+    var thumbTop = Math.round(maxThumbTop * ratio);
+
+    scrollbarThumb.style.height = thumbH + 'px';
+    scrollbarThumb.style.transform = 'translateY(' + thumbTop + 'px)';
+  }
+
+    /* =====================================================
    *   SHOW 数据
    * ===================================================== */
   var showData = null;
@@ -2578,6 +2755,8 @@ main{
     container.innerHTML = html;
     bindLightbox();
     bindRecordGroups();
+    /* 让滚动条适配新内容高度 */
+    setTimeout(updateCustomScrollbar, 60);
   }
 
   function bindRecordGroups() {
@@ -2760,6 +2939,7 @@ main{
     }).then(function () {
       if (name === 'home') startTagline();
       $$('.clickable-entry, .back-btn, .corner-mark', next).forEach(updateCornerMarks);
+      updateCustomScrollbar();
       switching = false;
     });
   }
@@ -2798,6 +2978,7 @@ main{
     });
 
     tryLoadAvatar();
+    initCustomScrollbar();
 
     setTimeout(function () {
       loader.classList.add('hidden');
