@@ -1,0 +1,41 @@
+2025-05-03 10:05:55,997 - INFO - 开始处理: https://teacher-edu.codemao.cn/
+2025-05-03 10:05:56,889 - ERROR - 生成预览失败: cannot identify image file 'C:\\Users\\冯丽玲\\Downloads\\icons\\teacher-edu.codemao.cn.ico'
+2025-05-03 10:05:56,897 - INFO - 成功下载: https://teacher-edu.codemao.cn/
+2025-05-03 10:08:07,056 - INFO - 下载已暂停
+2025-05-03 10:08:08,902 - INFO - 下载已恢复
+2025-05-03 10:09:04,886 - INFO - 开始处理: https://shequ.codemao.cn/
+2025-05-03 10:09:05,408 - INFO - 成功下载: https://shequ.codemao.cn/
+2025-05-03 10:14:57,328 - INFO - 开始处理: https://shequ.codemao.cn/
+2025-05-03 10:14:57,790 - INFO - 成功下载: https://shequ.codemao.cn/
+2025-05-03 10:25:38,526 - INFO - 开始处理: https://shequ.codemao.cn/
+2025-05-03 10:25:40,712 - INFO - 成功下载: https://shequ.codemao.cn/
+2025-05-03 10:32:28,934 - INFO - 开始处理: https://www.baidu.com
+2025-05-03 10:32:32,273 - INFO - 成功下载: https://www.baidu.com
+2025-05-03 10:32:32,346 - INFO - 所有任务已完成
+2025-08-13 14:21:22,395 - INFO - 开始处理: https://vocalremover.org/zh/
+2025-08-13 14:21:25,341 - INFO - 成功下载: https://vocalremover.org/zh/
+2025-08-13 14:21:25,430 - INFO - 所有任务已完成
+2025-08-15 12:55:13,818 - INFO - 开始处理: https://web.oopz.cn/
+2025-08-15 12:55:14,225 - ERROR - 下载失败: https://web.oopz.cn/ - 404 Client Error: Not Found for url: https://web.oopz.cn/icons/Icon-192.png
+2025-08-15 12:55:14,332 - INFO - 所有任务已完成
+2025-08-15 12:55:29,007 - INFO - 开始处理: https://web.oopz.cn/#/login
+2025-08-15 12:55:31,340 - ERROR - 下载失败: https://web.oopz.cn/#/login - 404 Client Error: Not Found for url: https://web.oopz.cn/icons/Icon-192.png
+2025-08-15 12:55:31,456 - INFO - 所有任务已完成
+2025-09-30 22:01:17,387 - INFO - 开始处理: https://tool.mkblog.cn/downgit/#/home?url=https:%2F%2Frelease-assets.githubusercontent.com%2Fgithub-production-release-asset%2F774887002%2F5eb480ae-1646-48df-9a23-d89f47849b94%3Fsp%3Dr&sv=2018-11-09&sr=b&spr=https&se=2025-09-30T14:45:44Z&rscd=attachment;%20filename%3DTTTTile_1.1.0.0.zip&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-30T13:44:58Z&ske=2025-09-30T14:45:44Z&sks=b&skv=2018-11-09&sig=CA5HUfl2%2FTAc0NiZOdu1AR4lxnyM6AIEhR0aVmL1EHs%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTI0MTEwMywibmJmIjoxNzU5MjQwODAzLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.Mq23Zi9w-qxnrwDwUc7q6EpeYkNDGg2XDt57_G_uE-M&response-content-disposition=attachment;%20filename%3DTTTTile_1.1.0.0.zip&response-content-type=application%2Foctet-stream
+2025-09-30 22:01:26,775 - INFO - 成功下载: https://tool.mkblog.cn/downgit/#/home?url=https:%2F%2Frelease-assets.githubusercontent.com%2Fgithub-production-release-asset%2F774887002%2F5eb480ae-1646-48df-9a23-d89f47849b94%3Fsp%3Dr&sv=2018-11-09&sr=b&spr=https&se=2025-09-30T14:45:44Z&rscd=attachment;%20filename%3DTTTTile_1.1.0.0.zip&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-09-30T13:44:58Z&ske=2025-09-30T14:45:44Z&sks=b&skv=2018-11-09&sig=CA5HUfl2%2FTAc0NiZOdu1AR4lxnyM6AIEhR0aVmL1EHs%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc1OTI0MTEwMywibmJmIjoxNzU5MjQwODAzLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.Mq23Zi9w-qxnrwDwUc7q6EpeYkNDGg2XDt57_G_uE-M&response-content-disposition=attachment;%20filename%3DTTTTile_1.1.0.0.zip&response-content-type=application%2Foctet-stream
+2025-09-30 22:01:26,894 - INFO - 所有任务已完成
+2025-09-30 22:03:02,403 - INFO - 开始处理: https://github.com/
+2025-09-30 22:03:03,126 - ERROR - 下载失败: https://github.com/ - 找不到favicon地址
+2025-09-30 22:03:03,141 - INFO - 所有任务已完成
+2025-09-30 22:35:13,479 - INFO - 开始处理: https://xuanli199.github.io/weekly/
+2025-09-30 22:35:47,401 - ERROR - 下载失败: https://xuanli199.github.io/weekly/ - 找不到favicon地址
+2025-09-30 22:35:47,459 - INFO - 所有任务已完成
+2025-10-01 16:03:38,819 - INFO - 开始处理: https://www.tiangong.cn/
+2025-10-01 16:03:43,991 - INFO - 成功下载: https://www.tiangong.cn/
+2025-10-01 16:03:44,036 - INFO - 所有任务已完成
+2025-10-02 09:20:12,416 - INFO - 开始处理: https://mc.dfrobot.com.cn/
+2025-10-02 09:20:14,387 - INFO - 成功下载: https://mc.dfrobot.com.cn/
+2025-10-02 09:20:14,398 - INFO - 所有任务已完成
+2025-10-02 09:21:41,171 - INFO - 开始处理: https://zhutix.com/
+2025-10-02 09:21:42,574 - INFO - 成功下载: https://zhutix.com/
+2025-10-02 09:21:42,610 - INFO - 所有任务已完成

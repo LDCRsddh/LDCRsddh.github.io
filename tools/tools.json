@@ -1,0 +1,58 @@
+[
+    {
+        "id":  "json-formatter",
+        "name":  "JSON 格式化",
+        "type":  "html",
+        "path":  "tools/json-formatter/index.html",
+        "desc":  "粘贴 JSON，格式化 / 压缩 / 校验-test"
+    },
+    {
+        "id":  "cleanup",
+        "name":  "临时文件清理",
+        "type":  "bat",
+        "path":  "tools/cleanup.bat",
+        "desc":  "Windows 批处理，清理 %TEMP%-test"
+    },
+    {
+        "id":  "02",
+        "name":  "parse_tree",
+        "type":  "bat",
+        "path":  "tools/another-tool/parse_tree.bat",
+        "desc":  "根据项目文件txt快速生成文件树"
+    },
+    {
+        "id":  "03",
+        "name":  "一键删除.inside",
+        "type":  "bat",
+        "path":  "tools/another-tool/一键删除.inside.bat",
+        "desc":  "顾名思义"
+    },
+    {
+        "id":  "04",
+        "name":  "隐藏sb安卓喷粪",
+        "type":  "bat",
+        "path":  "tools/another-tool/隐藏sb安卓喷粪.bat",
+        "desc":  "顾名思义"
+    },
+    {
+        "id":  "05",
+        "name":  "一键提取html网站图标",
+        "type":  "bat",
+        "path":  "tools/another-tool/一键提取html网站/2.bat",
+        "desc":  "顾名思义"
+    },
+    {
+        "id":  "06",
+        "name":  "AI聊天转word",
+        "type":  "html",
+        "path":  "tools/my-html-tool/AI聊天转word.html",
+        "desc":  "快捷转换"
+    },
+    {
+        "id":  "07",
+        "name":  "魔方个人纪录记录器",
+        "type":  "html",
+        "path":  "tools/my-html-tool/魔方个人纪录记录器.html",
+        "desc":  "用着玩的"
+    }
+]

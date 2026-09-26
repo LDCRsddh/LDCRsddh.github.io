@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.zip
+node_modules/
+dist/
+build/

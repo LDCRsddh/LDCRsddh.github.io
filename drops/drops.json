@@ -1,0 +1,67 @@
+[
+    {
+        "name":  "wallpaper-pack.zip",
+        "size":  "12.4 MB",
+        "desc":  "壁纸合集-test"
+    },
+    {
+        "name":  "notes.pdf",
+        "path":  "drops/2025/notes.pdf",
+        "size":  "820 KB",
+        "desc":  "笔记-test"
+    },
+    {
+        "name":  "anything-else.bin",
+        "path":  "drops/anything-else.bin",
+        "size":  "0",
+        "desc":  ""
+    },
+    {
+        "name":  "Bandicam（录屏软件，无需安装）.zip",
+        "path":  "drops/Bandicam（录屏软件，无需安装）.zip",
+        "size":  "35.1 MB",
+        "desc":  "录屏软件，无需安装"
+    },
+    {
+        "name":  "ContextMenuManager.NET.3.5.zip",
+        "path":  "drops/ContextMenuManager.NET.3.5.zip",
+        "size":  "247.2 KB",
+        "desc":  "鼠标右键管理"
+    },
+    {
+        "name":  "CrystalDiskInfo9_7_2Shizuku.zip",
+        "path":  "drops/CrystalDiskInfo9_7_2Shizuku.zip",
+        "size":  "246.2 MB",
+        "desc":  "系统信息查看"
+    },
+    {
+        "name":  "everything.zip",
+        "path":  "drops/everything.zip",
+        "size":  "34.0 MB",
+        "desc":  "扫盘"
+    },
+    {
+        "name":  "File Converter v1.2.3 汉化版.zip",
+        "path":  "drops/File Converter v1.2.3 汉化版.zip",
+        "size":  "72.9 MB",
+        "desc":  "文件本地转换"
+    },
+    {
+        "name":  "geek.zip",
+        "path":  "drops/geek.zip",
+        "size":  "3.2 MB",
+        "desc":  "删除软件"
+    },
+    {
+        "name":  "RhysUsebox-Setup-3.7.0.zip",
+        "path":  "drops/RhysUsebox-Setup-3.7.0.zip",
+        "size":  "60.6 MB",
+        "desc":  "个人工具箱"
+    },
+    {
+        "name":  "Kugo-Music-Converter-v0.6.1-windows-amd64-setup.zip",
+        "path":  "drops/Kugo-Music-Converter-v0.6.1-windows-amd64-setup.zip",
+        "size":  "38.7 MB",
+        "desc":  "kgm音乐破解"
+    }
+]

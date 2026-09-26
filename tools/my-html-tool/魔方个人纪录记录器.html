@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魔方个人纪录记录器 - CubePB</title>
+    <style>
+        :root {
+            --bg: #1a1a2e;
+            --surface: #16213e;
+            --surface2: #0f3460;
+            --accent: #e94560;
+            --accent2: #ff6b6b;
+            --gold: #f0c040;
+            --green: #4caf84;
+            --text: #e0e0e0;
+            --text2: #b0b0b0;
+            --text3: #808090;
+            --border: #2a2a4a;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --radius: 16px;
+            --radius-sm: 8px;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+            --font-sans: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            background-image:
+                radial-gradient(ellipse at 50% 30%, rgba(233, 68, 96, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse at 20% 70%, rgba(15, 52, 96, 0.4) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 60%, rgba(240, 192, 64, 0.05) 0%, transparent 50%);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 8px 0;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent), #c0392b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 4px 15px rgba(233, 68, 96, 0.35);
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 9px 16px;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-family: var(--font-sans);
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn:hover {
+            background: var(--surface2);
+            border-color: #4a4a6a;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+        }
+        .btn:active {
+            transform: scale(0.96);
+            transition: 0.08s;
+        }
+        .btn.accent {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 3px 14px rgba(233, 68, 96, 0.3);
+        }
+        .btn.accent:hover {
+            background: #ff5a78;
+            box-shadow: 0 5px 20px rgba(233, 68, 96, 0.4);
+        }
+        .btn.small {
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            border-radius: 20px;
+        }
+        .btn.danger {
+            border-color: #5a2a2a;
+            color: #ff6b6b;
+        }
+        .btn.danger:hover {
+            background: #3a1a1a;
+            border-color: #7a3a3a;
+        }
+
+        /* Mode selector */
+        .mode-selector {
+            display: flex;
+            gap: 4px;
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 4px;
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .mode-btn {
+            padding: 8px 16px;
+            border-radius: 24px;
+            border: none;
+            background: transparent;
+            color: var(--text2);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+            white-space: nowrap;
+            letter-spacing: 0.1px;
+        }
+        .mode-btn.active {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(233, 68, 96, 0.3);
+        }
+        .mode-btn:hover:not(.active) {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Timer Card */
+        .timer-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 28px 24px 22px;
+            text-align: center;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .timer-card:hover {
+            border-color: #4a4a6a;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5);
+        }
+        .timer-card.running {
+            border-color: var(--accent);
+            box-shadow: 0 0 40px rgba(233, 68, 96, 0.2), 0 6px 30px rgba(0, 0, 0, 0.5);
+            animation: pulse-border 2s ease-in-out infinite;
+        }
+        .timer-card.countdown-phase {
+            border-color: var(--gold);
+            box-shadow: 0 0 40px rgba(240, 192, 64, 0.25), 0 6px 30px rgba(0, 0, 0, 0.5);
+            animation: pulse-border-gold 1.5s ease-in-out infinite;
+        }
+        .timer-card.stopped {
+            border-color: var(--green);
+            box-shadow: 0 0 30px rgba(76, 175, 132, 0.2), 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        @keyframes pulse-border {
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(233, 68, 96, 0.15), 0 6px 30px rgba(0, 0, 0, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(233, 68, 96, 0.3), 0 6px 30px rgba(0, 0, 0, 0.5);
+            }
+        }
+        @keyframes pulse-border-gold {
+            0%,
+            100% {
+                box-shadow: 0 0 25px rgba(240, 192, 64, 0.2), 0 6px 30px rgba(0, 0, 0, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 45px rgba(240, 192, 64, 0.35), 0 6px 30px rgba(0, 0, 0, 0.5);
+            }
+        }
+        .timer-hint {
+            font-size: 0.85rem;
+            color: var(--text3);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            transition: var(--transition);
+        }
+        .timer-display {
+            font-family: var(--font-mono);
+            font-size: 5.5rem;
+            font-weight: 300;
+            letter-spacing: -2px;
+            color: #fff;
+            transition: color 0.3s;
+            line-height: 1;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+        }
+        .timer-display.countdown-warning {
+            color: #ff6b6b;
+            text-shadow: 0 0 40px rgba(255, 107, 107, 0.4);
+        }
+        .timer-display.final-time {
+            color: var(--green);
+            text-shadow: 0 0 35px rgba(76, 175, 132, 0.4);
+        }
+        .timer-sub {
+            font-size: 0.85rem;
+            color: var(--text3);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+            min-height: 20px;
+        }
+        .timer-status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+            transition: var(--transition);
+        }
+        .badge-idle {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text3);
+        }
+        .badge-running {
+            background: rgba(233, 68, 96, 0.2);
+            color: #ff8a9e;
+        }
+        .badge-countdown {
+            background: rgba(240, 192, 64, 0.2);
+            color: #f5d060;
+        }
+        .badge-done {
+            background: rgba(76, 175, 132, 0.2);
+            color: #6fcf97;
+        }
+
+        /* Settings row */
+        .settings-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 0;
+        }
+        .setting-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface);
+            border-radius: 22px;
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            font-size: 0.82rem;
+            color: var(--text2);
+        }
+        .setting-group label {
+            white-space: nowrap;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            color: var(--text3);
+        }
+        .setting-group input[type="number"] {
+            width: 48px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 5px 8px;
+            color: #fff;
+            font-size: 0.85rem;
+            text-align: center;
+            font-family: var(--font-mono);
+            transition: var(--transition);
+        }
+        .setting-group input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(233, 68, 96, 0.2);
+        }
+        .setting-group select {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 5px 10px;
+            color: #fff;
+            font-size: 0.82rem;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 90px;
+        }
+        .setting-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .toggle-obs {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            color: var(--text2);
+            background: var(--surface);
+            border-radius: 22px;
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .toggle-obs:hover {
+            border-color: #4a4a6a;
+        }
+        .toggle-obs input {
+            accent-color: var(--accent);
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+        .toggle-obs.active-toggle {
+            border-color: var(--accent);
+            background: rgba(233, 68, 96, 0.08);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 4px;
+            border: 1px solid var(--border);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 9px 14px;
+            border-radius: 20px;
+            border: none;
+            background: transparent;
+            color: var(--text2);
+            cursor: pointer;
+            font-size: 0.84rem;
+            font-weight: 500;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+            letter-spacing: 0.1px;
+        }
+        .tab-btn.active {
+            background: var(--surface2);
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .tab-btn:hover:not(.active) {
+            color: #ddd;
+        }
+
+        /* Panel */
+        .panel {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .panel-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.1px;
+            color: #fff;
+        }
+        .filter-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-chip {
+            padding: 5px 12px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text2);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+            white-space: nowrap;
+        }
+        .filter-chip.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .filter-chip:hover:not(.active) {
+            border-color: #5a5a7a;
+            color: #fff;
+        }
+
+        /* Solve list */
+        .solve-list {
+            max-height: 360px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #3a3a5a transparent;
+        }
+        .solve-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .solve-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .solve-list::-webkit-scrollbar-thumb {
+            background: #3a3a5a;
+            border-radius: 10px;
+        }
+        .solve-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: var(--transition);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .solve-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .solve-index {
+            font-size: 0.75rem;
+            color: var(--text3);
+            min-width: 28px;
+            font-weight: 500;
+            text-align: center;
+        }
+        .solve-time {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: -0.3px;
+            min-width: 70px;
+            text-align: right;
+        }
+        .solve-time.dnf {
+            color: #ff6b6b;
+            text-decoration: line-through;
+        }
+        .solve-time.plus2 {
+            color: #ffb347;
+        }
+        .solve-method {
+            font-size: 0.75rem;
+            background: var(--surface2);
+            padding: 3px 10px;
+            border-radius: 12px;
+            color: var(--text2);
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+        .solve-date {
+            font-size: 0.72rem;
+            color: var(--text3);
+            white-space: nowrap;
+        }
+        .solve-actions {
+            display: flex;
+            gap: 4px;
+        }
+        .solve-actions button {
+            background: none;
+            border: none;
+            color: var(--text3);
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 4px 7px;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+            white-space: nowrap;
+        }
+        .solve-actions button:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+        .solve-actions button.dnf-btn:hover {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+        .solve-actions button.plus2-btn:hover {
+            color: #ffb347;
+            background: rgba(255, 179, 71, 0.1);
+        }
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text3);
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            padding: 16px 18px;
+        }
+        .stat-card {
+            background: var(--surface2);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+        .stat-value.best {
+            color: var(--green);
+        }
+        .stat-value.worst {
+            color: #ff6b6b;
+        }
+
+        /* Chart area */
+        .chart-container {
+            padding: 16px 12px;
+            position: relative;
+        }
+        .chart-container canvas {
+            width: 100%;
+            height: 300px;
+            display: block;
+        }
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 8px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--text2);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        .legend-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* Export area */
+        .export-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 8px 0;
+            justify-content: center;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2a2a4a;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 22px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid #4a4a6a;
+        }
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .timer-display {
+                font-size: 3.8rem;
+                letter-spacing: -1px;
+            }
+            .timer-card {
+                padding: 20px 14px 16px;
+                min-height: 150px;
+            }
+            .mode-selector {
+                border-radius: 22px;
+                padding: 3px;
+            }
+            .mode-btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+                border-radius: 18px;
+            }
+            .btn {
+                padding: 7px 12px;
+                font-size: 0.78rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+                padding: 10px 8px;
+            }
+            .stat-card {
+                padding: 8px 6px;
+            }
+            .stat-value {
+                font-size: 0.95rem;
+            }
+            .solve-time {
+                font-size: 0.9rem;
+                min-width: 55px;
+            }
+            .solve-item {
+                padding: 8px 10px;
+                gap: 6px;
+            }
+            .setting-group {
+                padding: 4px 10px;
+                font-size: 0.72rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🧊</div>
+                <span>CubePB</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn small" onclick="exportData('csv')" title="导出CSV">CSV</button>
+                <button class="btn small" onclick="exportData('json')" title="导出JSON">JSON</button>
+                <button class="btn small danger" onclick="clearAllData()" title="清除所有数据">清空</button>
+            </div>
+        </div>
+
+        <!-- Mode Selector -->
+        <div class="mode-selector" id="modeSelector">
+            <button class="mode-btn active" data-mode="standard">顺计时</button>
+            <button class="mode-btn" data-mode="countdown">倒计时</button>
+            <button class="mode-btn" data-mode="continuous">连续复原</button>
+        </div>
+
+        <!-- Timer Card -->
+        <div class="timer-card" id="timerCard">
+            <div class="timer-hint" id="timerHint">按空格键或点击此处开始</div>
+            <div class="timer-display" id="timerDisplay">0.00</div>
+            <div class="timer-sub" id="timerSub"></div>
+            <div class="timer-status-badge badge-idle" id="timerBadge">就绪</div>
+        </div>
+
+        <!-- Settings Row -->
+        <div class="settings-row" id="settingsRow">
+            <div class="setting-group" id="countdownSetting">
+                <label>倒计时</label>
+                <input type="number" id="countdownSeconds" value="15" min="1" max="300" step="1">
+                <span style="color:var(--text3)">秒</span>
+            </div>
+            <label class="toggle-obs" id="obsToggle">
+                <input type="checkbox" id="useObservation">
+                <span>观察时间</span>
+                <input type="number" id="obsSeconds" value="15" min="1" max="60" step="1" style="width:40px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:3px 5px;color:#fff;font-size:0.78rem;text-align:center;font-family:var(--font-mono);">
+                <span style="color:var(--text3)">秒</span>
+            </label>
+            <div class="setting-group" id="continuousSetting">
+                <label>复原次数</label>
+                <input type="number" id="continuousCount" value="5" min="2" max="50" step="1">
+            </div>
+            <div class="setting-group">
+                <label>方法</label>
+                <select id="defaultMethod">
+                    <option value="CFOP">CFOP</option>
+                    <option value="Roux">Roux</option>
+                    <option value="ZZ">ZZ</option>
+                    <option value="Petrus">Petrus</option>
+                    <option value="Beginner">层先法</option>
+                    <option value="Other">其他</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="tabs">
+            <button class="tab-btn active" data-tab="list">成绩列表</button>
+            <button class="tab-btn" data-tab="stats">统计图表</button>
+        </div>
+
+        <!-- List Panel -->
+        <div class="panel" id="listPanel">
+            <div class="panel-header">
+                <span class="panel-title">复原记录</span>
+                <div class="filter-row" id="methodFilters">
+                    <button class="filter-chip active" data-method="all">全部</button>
+                    <button class="filter-chip" data-method="CFOP">CFOP</button>
+                    <button class="filter-chip" data-method="Roux">Roux</button>
+                    <button class="filter-chip" data-method="ZZ">ZZ</button>
+                    <button class="filter-chip" data-method="Petrus">Petrus</button>
+                    <button class="filter-chip" data-method="Beginner">层先法</button>
+                    <button class="filter-chip" data-method="Other">其他</button>
+                </div>
+            </div>
+            <div class="solve-list" id="solveList">
+                <div class="no-data">还没有记录，开始计时吧！</div>
+            </div>
+            <div class="stats-grid" id="statsGrid"></div>
+        </div>
+
+        <!-- Chart Panel -->
+        <div class="panel" id="chartPanel" style="display:none;">
+            <div class="panel-header">
+                <span class="panel-title">成绩趋势图</span>
+                <span style="font-size:0.75rem;color:var(--text3);">完成时间 vs 记录日期</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="chartCanvas"></canvas>
+            </div>
+            <div class="chart-legend" id="chartLegend"></div>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+        (function() {
+            // ==================== DOM ELEMENTS ====================
+            const timerCard = document.getElementById('timerCard');
+            const timerDisplay = document.getElementById('timerDisplay');
+            const timerHint = document.getElementById('timerHint');
+            const timerSub = document.getElementById('timerSub');
+            const timerBadge = document.getElementById('timerBadge');
+            const modeSelector = document.getElementById('modeSelector');
+            const settingsRow = document.getElementById('settingsRow');
+            const countdownSetting = document.getElementById('countdownSetting');
+            const continuousSetting = document.getElementById('continuousSetting');
+            const obsToggle = document.getElementById('obsToggle');
+            const useObservationCheckbox = document.getElementById('useObservation');
+            const obsSecondsInput = document.getElementById('obsSeconds');
+            const countdownSecondsInput = document.getElementById('countdownSeconds');
+            const continuousCountInput = document.getElementById('continuousCount');
+            const defaultMethodSelect = document.getElementById('defaultMethod');
+            const solveListEl = document.getElementById('solveList');
+            const statsGrid = document.getElementById('statsGrid');
+            const methodFilters = document.getElementById('methodFilters');
+            const listPanel = document.getElementById('listPanel');
+            const chartPanel = document.getElementById('chartPanel');
+            const chartCanvas = document.getElementById('chartCanvas');
+            const chartLegend = document.getElementById('chartLegend');
+            const toast = document.getElementById('toast');
+            const tabsEl = document.getElementById('tabs');
+
+            // ==================== STATE ====================
+            const STORAGE_KEY = 'cube_pb_solves_v2';
+            const METHODS = ['CFOP', 'Roux', 'ZZ', 'Petrus', 'Beginner', 'Other'];
+            const METHOD_COLORS = {
+                'CFOP': '#e94560',
+                'Roux': '#4caf84',
+                'ZZ': '#f0c040',
+                'Petrus': '#5b9bd5',
+                'Beginner': '#ff8c42',
+                'Other': '#a78bfa',
+                'all': '#e0e0e0'
+            };
+
+            let currentMode = 'standard'; // 'standard' | 'countdown' | 'continuous'
+            let timerState = 'idle'; // 'idle' | 'countdown' | 'running' | 'stopped' | 'between'
+            let timerStartTime = null;
+            let countdownStartTime = null;
+            let countdownDuration = 0; // ms
+            let observationDuration = 0; // ms
+            let useObservation = false;
+            let animFrameId = null;
+            let spacePressed = false;
+            let continuousTotal = 5;
+            let continuousCurrent = 0;
+            let continuousResults = [];
+            let currentSolveTime = null;
+            let activeFilter = 'all';
+            let activeTab = 'list';
+
+            // Load solves from localStorage
+            let solves = [];
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    solves = JSON.parse(raw);
+                    if (!Array.isArray(solves)) solves = [];
+                }
+            } catch (e) {
+                solves = [];
+            }
+
+            // ==================== UTILS ====================
+            function saveSolves() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(solves));
+                } catch (e) {
+                    showToast('⚠️ 存储空间不足，请清理旧记录');
+                }
+            }
+
+            function formatTime(ms) {
+                if (ms === null || ms === undefined || isNaN(ms)) return 'DNF';
+                if (ms < 0) ms = 0;
+                const totalSeconds = ms / 1000;
+                if (totalSeconds < 60) {
+                    return totalSeconds.toFixed(2);
+                } else if (totalSeconds < 3600) {
+                    const mins = Math.floor(totalSeconds / 60);
+                    const secs = (totalSeconds % 60).toFixed(2);
+                    return `${mins}:${secs.padStart(5, '0')}`;
+                } else {
+                    const hrs = Math.floor(totalSeconds / 3600);
+                    const mins = Math.floor((totalSeconds % 3600) / 60);
+                    const secs = ((totalSeconds % 3600) % 60).toFixed(2);
+                    return `${hrs}:${String(mins).padStart(2, '0')}:${secs.padStart(5, '0')}`;
+                }
+            }
+
+            function formatDate(isoStr) {
+                try {
+                    const d = new Date(isoStr);
+                    const now = new Date();
+                    const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+                    const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                    if (diffDays === 0) return '今天 ' + timeStr;
+                    if (diffDays === 1) return '昨天 ' + timeStr;
+                    if (diffDays < 7) return `${diffDays}天前 ` + timeStr;
+                    return d.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }) + ' ' + timeStr;
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            function showToast(msg) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                clearTimeout(toast._timeout);
+                toast._timeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            }
+
+            function generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+            }
+
+            // ==================== TIMER LOGIC ====================
+            function updateTimerDisplay() {
+                const now = performance.now();
+
+                if (timerState === 'countdown') {
+                    const elapsed = now - countdownStartTime;
+                    const remaining = Math.max(0, countdownDuration - elapsed);
+                    timerDisplay.textContent = formatTime(remaining);
+                    if (remaining < 3000 && remaining > 0) {
+                        timerDisplay.classList.add('countdown-warning');
+                    } else {
+                        timerDisplay.classList.remove('countdown-warning');
+                    }
+                    timerDisplay.classList.remove('final-time');
+                    if (remaining <= 0) {
+                        // Countdown finished
+                        finishCountdown(now);
+                    }
+                } else if (timerState === 'running') {
+                    const elapsed = now - timerStartTime;
+                    timerDisplay.textContent = formatTime(elapsed);
+                    timerDisplay.classList.remove('countdown-warning', 'final-time');
+                } else if (timerState === 'stopped' && currentSolveTime !== null) {
+                    timerDisplay.textContent = formatTime(currentSolveTime);
+                    timerDisplay.classList.add('final-time');
+                    timerDisplay.classList.remove('countdown-warning');
+                } else if (timerState === 'idle' || timerState === 'between') {
+                    timerDisplay.textContent = '0.00';
+                    timerDisplay.classList.remove('countdown-warning', 'final-time');
+                }
+            }
+
+            function finishCountdown(now) {
+                // Countdown reached 0, now start actual timing (observation -> solve)
+                timerState = 'running';
+                timerStartTime = now;
+                timerCard.classList.remove('countdown-phase');
+                timerCard.classList.add('running');
+                timerBadge.textContent = '计时中...';
+                timerBadge.className = 'timer-status-badge badge-running';
+                timerHint.textContent = '按空格键停止计时';
+                timerSub.textContent = '';
+                updateTimerDisplay();
+            }
+
+            function startCountdownPhase(durationMs, isObservation) {
+                timerState = 'countdown';
+                countdownStartTime = performance.now();
+                countdownDuration = durationMs;
+                timerCard.classList.add('countdown-phase');
+                timerCard.classList.remove('running', 'stopped');
+                timerBadge.textContent = isObservation ? '观察中...' : '倒计时中...';
+                timerBadge.className = 'timer-status-badge badge-countdown';
+                timerHint.textContent = isObservation ? '观察时间，即将自动开始' : '倒计时中...';
+                timerSub.textContent = isObservation ? '请观察魔方' : '';
+                updateTimerDisplay();
+            }
+
+            function startRunning() {
+                timerState = 'running';
+                timerStartTime = performance.now();
+                timerCard.classList.add('running');
+                timerCard.classList.remove('countdown-phase', 'stopped');
+                timerBadge.textContent = '计时中...';
+                timerBadge.className = 'timer-status-badge badge-running';
+                timerHint.textContent = '按空格键停止计时';
+                timerSub.textContent = '';
+                updateTimerDisplay();
+            }
+
+            function stopTimer() {
+                const now = performance.now();
+                let solveTime;
+                if (timerState === 'countdown') {
+                    // Stopped during countdown (observation) - start timing immediately
+                    solveTime = null; // will be set when they stop again
+                    timerState = 'running';
+                    timerStartTime = now;
+                    timerCard.classList.remove('countdown-phase');
+                    timerCard.classList.add('running');
+                    timerBadge.textContent = '计时中...';
+                    timerBadge.className = 'timer-status-badge badge-running';
+                    timerHint.textContent = '按空格键停止计时';
+                    timerSub.textContent = '提前开始！';
+                    updateTimerDisplay();
+                    return;
+                } else if (timerState === 'running') {
+                    solveTime = now - timerStartTime;
+                } else {
+                    return; // Not in a stoppable state
+                }
+
+                currentSolveTime = solveTime;
+                timerState = 'stopped';
+                timerCard.classList.remove('running', 'countdown-phase');
+                timerCard.classList.add('stopped');
+                timerBadge.textContent = '完成！';
+                timerBadge.className = 'timer-status-badge badge-done';
+                timerHint.textContent = '成绩已记录';
+                timerSub.textContent = '';
+                updateTimerDisplay();
+
+                // Record the solve
+                recordSolve(solveTime);
+
+                // Handle continuous mode
+                if (currentMode === 'continuous') {
+                    continuousResults.push(solveTime);
+                    continuousCurrent++;
+                    if (continuousCurrent >= continuousTotal) {
+                        // All solves done
+                        finalizeContinuousSession();
+                    } else {
+                        // Prepare for next solve after a short delay
+                        timerSub.textContent =
+                            `第 ${continuousCurrent} 次完成，准备第 ${continuousCurrent + 1} 次...`;
+                        timerBadge.textContent = `等待第 ${continuousCurrent + 1}/${continuousTotal} 次`;
+                        timerBadge.className = 'timer-status-badge badge-idle';
+                        setTimeout(() => {
+                            if (timerState === 'stopped') {
+                                prepareNextContinuousSolve();
+                            }
+                        }, 1800);
+                    }
+                } else {
+                    // Standard or countdown mode - reset after delay
+                    setTimeout(() => {
+                        if (timerState === 'stopped' && currentMode !== 'continuous') {
+                            resetToIdle();
+                        }
+                    }, 2500);
+                }
+            }
+
+            function prepareNextContinuousSolve() {
+                timerState = 'between';
+                timerCard.classList.remove('stopped', 'running', 'countdown-phase');
+                timerBadge.textContent = `准备第 ${continuousCurrent + 1}/${continuousTotal} 次`;
+                timerBadge.className = 'timer-status-badge badge-idle';
+                timerHint.textContent = '按空格键开始下一次';
+                timerSub.textContent = `已完成 ${continuousCurrent}/${continuousTotal}`;
+                timerDisplay.textContent = '0.00';
+                timerDisplay.classList.remove('countdown-warning', 'final-time');
+                currentSolveTime = null;
+            }
+
+            function finalizeContinuousSession() {
+                const results = [...continuousResults];
+                const sorted = [...results].sort((a, b) => a - b);
+                let avg;
+                if (results.length >= 3) {
+                    // Ao5 style: remove best and worst
+                    const trimmed = sorted.slice(1, -1);
+                    avg = trimmed.reduce((a, b) => a + b, 0) / trimmed.length;
+                } else {
+                    avg = results.reduce((a, b) => a + b, 0) / results.length;
+                }
+                timerSub.textContent =
+                    `全部完成！平均: ${formatTime(avg)} | 最佳: ${formatTime(sorted[0])} | 最慢: ${formatTime(sorted[sorted.length-1])}`;
+                timerBadge.textContent = `${continuousTotal}次完成`;
+                timerBadge.className = 'timer-status-badge badge-done';
+                timerHint.textContent = '按空格键开始新一轮';
+                continuousResults = [];
+                continuousCurrent = 0;
+                showToast(`连续${continuousTotal}次复原完成！平均: ${formatTime(avg)}`);
+                setTimeout(() => {
+                    if (timerState === 'stopped') resetToIdle();
+                }, 3500);
+            }
+
+            function resetToIdle() {
+                timerState = 'idle';
+                currentSolveTime = null;
+                timerCard.classList.remove('running', 'countdown-phase', 'stopped');
+                timerBadge.textContent = '就绪';
+                timerBadge.className = 'timer-status-badge badge-idle';
+                timerHint.textContent = getHintText();
+                timerSub.textContent = '';
+                timerDisplay.textContent = '0.00';
+                timerDisplay.classList.remove('countdown-warning', 'final-time');
+                if (currentMode === 'continuous') {
+                    continuousResults = [];
+                    continuousCurrent = 0;
+                }
+            }
+
+            function getHintText() {
+                switch (currentMode) {
+                    case 'standard':
+                        return useObservation ? '按空格键开始观察' : '按空格键开始计时';
+                    case 'countdown':
+                        return '按空格键开始倒计时';
+                    case 'continuous':
+                        return `按空格键开始第 1/${continuousTotal} 次`;
+                    default:
+                        return '按空格键或点击此处开始';
+                }
+            }
+
+            function triggerStart() {
+                if (timerState === 'running' || timerState === 'countdown') {
+                    stopTimer();
+                    return;
+                }
+                if (timerState === 'stopped') {
+                    // If in continuous and between solves, allow starting next
+                    if (currentMode === 'continuous' && continuousCurrent < continuousTotal &&
+                        continuousResults.length < continuousTotal) {
+                        // Still have solves remaining
+                    } else if (currentMode === 'continuous') {
+                        resetToIdle();
+                    } else {
+                        resetToIdle();
+                    }
+                    // Small delay to prevent accidental immediate re-trigger
+                    if (timerState === 'stopped') return;
+                }
+
+                // Start new solve
+                if (currentMode === 'standard') {
+                    if (useObservation && observationDuration > 0) {
+                        startCountdownPhase(observationDuration, true);
+                    } else {
+                        startRunning();
+                    }
+                } else if (currentMode === 'countdown') {
+                    const cdSec = parseInt(countdownSecondsInput.value) || 15;
+                    startCountdownPhase(cdSec * 1000, false);
+                } else if (currentMode === 'continuous') {
+                    if (continuousCurrent >= continuousTotal) {
+                        continuousResults = [];
+                        continuousCurrent = 0;
+                    }
+                    if (useObservation && observationDuration > 0) {
+                        startCountdownPhase(observationDuration, true);
+                    } else {
+                        startRunning();
+                    }
+                    timerSub.textContent = `第 ${continuousCurrent + 1}/${continuousTotal} 次`;
+                }
+            }
+
+            function recordSolve(solveTime) {
+                const method = defaultMethodSelect.value;
+                const solve = {
+                    id: generateId(),
+                    time: Math.round(solveTime),
+                    timestamp: new Date().toISOString(),
+                    method: method,
+                    mode: currentMode,
+                    penalty: 'none',
+                };
+                solves.unshift(solve);
+                saveSolves();
+                renderSolves();
+                renderStats();
+                if (activeTab === 'stats') {
+                    drawChart();
+                }
+            }
+
+            function applyPenalty(id, penalty) {
+                const solve = solves.find(s => s.id === id);
+                if (!solve) return;
+                if (solve.penalty === penalty) {
+                    solve.penalty = 'none';
+                } else {
+                    solve.penalty = penalty;
+                }
+                saveSolves();
+                renderSolves();
+                renderStats();
+                if (activeTab === 'stats') drawChart();
+            }
+
+            function deleteSolve(id) {
+                solves = solves.filter(s => s.id !== id);
+                saveSolves();
+                renderSolves();
+                renderStats();
+                if (activeTab === 'stats') drawChart();
+                showToast('记录已删除');
+            }
+
+            function getEffectiveTime(solve) {
+                if (solve.penalty === 'dnf') return null;
+                if (solve.penalty === 'plus2') return solve.time + 2000;
+                return solve.time;
+            }
+
+            // ==================== RENDER ====================
+            function renderSolves() {
+                let filtered = solves;
+                if (activeFilter !== 'all') {
+                    filtered = solves.filter(s => s.method === activeFilter);
+                }
+                if (filtered.length === 0) {
+                    solveListEl.innerHTML = '<div class="no-data">暂无记录，开始计时吧！</div>';
+                } else {
+                    solveListEl.innerHTML = filtered.map((s, i) => {
+                        const effTime = getEffectiveTime(s);
+                        const displayTime = s.penalty === 'dnf' ? 'DNF' : formatTime(effTime);
+                        const timeClass = s.penalty === 'dnf' ? 'dnf' : s.penalty === 'plus2' ?
+                            'plus2' : '';
+                        const penaltyLabel = s.penalty === 'plus2' ? ' +2' : s.penalty === 'dnf' ?
+                            ' DNF' : '';
+                        return `
+                        <div class="solve-item">
+                            <span class="solve-index">#${i + 1}</span>
+                            <span class="solve-time ${timeClass}">${displayTime}${penaltyLabel}</span>
+                            <span class="solve-method">${s.method}</span>
+                            <span class="solve-date">${formatDate(s.timestamp)}</span>
+                            <span class="solve-actions">
+                                <button class="plus2-btn" onclick="window._applyPenalty('${s.id}', 'plus2')" title="+2秒惩罚">+2</button>
+                                <button class="dnf-btn" onclick="window._applyPenalty('${s.id}', 'dnf')" title="DNF">✕</button>
+                                <button onclick="window._deleteSolve('${s.id}')" title="删除">🗑</button>
+                            </span>
+                        </div>`;
+                    }).join('');
+                }
+            }
+
+            function renderStats() {
+                let filtered = solves;
+                if (activeFilter !== 'all') {
+                    filtered = solves.filter(s => s.method === activeFilter);
+                }
+                const validSolves = filtered.filter(s => s.penalty !== 'dnf');
+                const effectiveTimes = validSolves.map(s => getEffectiveTime(s)).filter(t => t !== null);
+
+                if (effectiveTimes.length === 0) {
+                    statsGrid.innerHTML =
+                        '<div class="stat-card"><div class="stat-label">数据</div><div class="stat-value">--</div></div>';
+                    return;
+                }
+
+                const best = Math.min(...effectiveTimes);
+                const worst = Math.max(...effectiveTimes);
+                const avg = effectiveTimes.reduce((a, b) => a + b, 0) / effectiveTimes.length;
+
+                // Ao5
+                let ao5 = null;
+                if (effectiveTimes.length >= 5) {
+                    const last5 = effectiveTimes.slice(0, 5);
+                    const sorted5 = [...last5].sort((a, b) => a - b);
+                    ao5 = sorted5.slice(1, -1).reduce((a, b) => a + b, 0) / 3;
+                }
+
+                // Ao12
+                let ao12 = null;
+                if (effectiveTimes.length >= 12) {
+                    const last12 = effectiveTimes.slice(0, 12);
+                    const sorted12 = [...last12].sort((a, b) => a - b);
+                    ao12 = sorted12.slice(1, -1).reduce((a, b) => a + b, 0) / 10;
+                }
+
+                const dnfCount = filtered.filter(s => s.penalty === 'dnf').length;
+                const plus2Count = filtered.filter(s => s.penalty === 'plus2').length;
+
+                let statsHTML = `
+                    <div class="stat-card">
+                        <div class="stat-label">总次数</div>
+                        <div class="stat-value">${filtered.length}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">🏆 最佳</div>
+                        <div class="stat-value best">${formatTime(best)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">平均</div>
+                        <div class="stat-value">${formatTime(avg)}</div>
+                    </div>`;
+                if (ao5 !== null) {
+                    statsHTML += `
+                    <div class="stat-card">
+                        <div class="stat-label">Ao5</div>
+                        <div class="stat-value">${formatTime(ao5)}</div>
+                    </div>`;
+                }
+                if (ao12 !== null) {
+                    statsHTML += `
+                    <div class="stat-card">
+                        <div class="stat-label">Ao12</div>
+                        <div class="stat-value">${formatTime(ao12)}</div>
+                    </div>`;
+                }
+                statsHTML += `
+                    <div class="stat-card">
+                        <div class="stat-label">🐢 最慢</div>
+                        <div class="stat-value worst">${formatTime(worst)}</div>
+                    </div>`;
+                if (dnfCount > 0 || plus2Count > 0) {
+                    statsHTML += `
+                    <div class="stat-card">
+                        <div class="stat-label">罚时</div>
+                        <div class="stat-value" style="font-size:0.85rem;">DNF:${dnfCount} +2:${plus2Count}</div>
+                    </div>`;
+                }
+                statsGrid.innerHTML = statsHTML;
+            }
+
+            // ==================== CHART ====================
+            function drawChart() {
+                const canvas = chartCanvas;
+                const ctx = canvas.getContext('2d');
+                const dpr = window.devicePixelRatio || 1;
+
+                // Set canvas size
+                const rect = canvas.parentElement.getBoundingClientRect();
+                const width = rect.width - 24;
+                const height = 300;
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                ctx.scale(dpr, dpr);
+
+                // Clear
+                ctx.clearRect(0, 0, width, height);
+
+                // Filter data
+                let dataSolves = [...solves].reverse(); // chronological order
+                if (activeFilter !== 'all') {
+                    dataSolves = dataSolves.filter(s => s.method === activeFilter);
+                }
+
+                if (dataSolves.length < 1) {
+                    ctx.fillStyle = '#808090';
+                    ctx.font = '14px "Segoe UI", "PingFang SC", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('数据不足，无法绘制图表', width / 2, height / 2);
+                    chartLegend.innerHTML = '';
+                    return;
+                }
+
+                // Prepare data points
+                const points = dataSolves.map((s, i) => ({
+                    index: i,
+                    time: getEffectiveTime(s),
+                    timestamp: new Date(s.timestamp),
+                    method: s.method,
+                    penalty: s.penalty,
+                })).filter(p => p.time !== null);
+
+                if (points.length < 1) {
+                    ctx.fillStyle = '#808090';
+                    ctx.font = '14px "Segoe UI", "PingFang SC", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('没有有效成绩可绘制', width / 2, height / 2);
+                    chartLegend.innerHTML = '';
+                    return;
+                }
+
+                const padding = { top: 20, right: 30, bottom: 45, left: 55 };
+                const plotWidth = width - padding.left - padding.right;
+                const plotHeight = height - padding.top - padding.bottom;
+
+                const times = points.map(p => p.time);
+                const minTime = Math.min(...times);
+                const maxTime = Math.max(...times);
+                const yRange = maxTime - minTime || 1000;
+                const yMin = Math.max(0, minTime - yRange * 0.15);
+                const yMax = maxTime + yRange * 0.15;
+
+                function xPos(i) {
+                    return padding.left + (i / Math.max(1, points.length - 1)) * plotWidth;
+                }
+
+                function yPos(t) {
+                    return padding.top + plotHeight - ((t - yMin) / (yMax - yMin)) * plotHeight;
+                }
+
+                // Grid
+                ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+                ctx.lineWidth = 1;
+                const gridLines = 6;
+                for (let i = 0; i <= gridLines; i++) {
+                    const y = padding.top + (plotHeight / gridLines) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(padding.left, y);
+                    ctx.lineTo(width - padding.right, y);
+                    ctx.stroke();
+                    const val = yMax - (yMax - yMin) * (i / gridLines);
+                    ctx.fillStyle = '#808090';
+                    ctx.font = '10px "SF Mono", "Consolas", monospace';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(formatTime(val), padding.left - 8, y + 4);
+                }
+
+                // X axis labels
+                const maxLabels = Math.min(8, points.length);
+                const labelStep = Math.max(1, Math.floor(points.length / maxLabels));
+                for (let i = 0; i < points.length; i += labelStep) {
+                    const x = xPos(i);
+                    const d = points[i].timestamp;
+                    const label = `${d.getMonth()+1}/${d.getDate()}`;
+                    ctx.fillStyle = '#808090';
+                    ctx.font = '9px "Segoe UI", "PingFang SC", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(label, x, height - padding.bottom + 16);
+                }
+                // Also show last point
+                if (points.length > 1 && (points.length - 1) % labelStep !== 0) {
+                    const x = xPos(points.length - 1);
+                    const d = points[points.length - 1].timestamp;
+                    const label = `${d.getMonth()+1}/${d.getDate()}`;
+                    ctx.fillText(label, x, height - padding.bottom + 16);
+                }
+
+                // Axis lines
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(padding.left, padding.top);
+                ctx.lineTo(padding.left, height - padding.bottom);
+                ctx.lineTo(width - padding.right, height - padding.bottom);
+                ctx.stroke();
+
+                // Group by method for colored lines
+                const methodGroups = {};
+                points.forEach(p => {
+                    if (!methodGroups[p.method]) methodGroups[p.method] = [];
+                    methodGroups[p.method].push(p);
+                });
+
+                // Draw lines per method
+                const legendHTML = [];
+                const allMethods = Object.keys(methodGroups);
+                allMethods.forEach(method => {
+                    const group = methodGroups[method];
+                    const color = METHOD_COLORS[method] || '#ccc';
+                    legendHTML.push(
+                        `<span class="legend-item" data-method="${method}"><span class="legend-dot" style="background:${color};"></span>${method}</span>`
+                        );
+
+                    if (group.length < 2) {
+                        // Single point
+                        const p = group[0];
+                        const idx = points.indexOf(p);
+                        ctx.fillStyle = color;
+                        ctx.beginPath();
+                        ctx.arc(xPos(idx), yPos(p.time), 5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+                    } else {
+                        // Line
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 2.5;
+                        ctx.lineJoin = 'round';
+                        ctx.lineCap = 'round';
+                        ctx.beginPath();
+                        let firstPoint = true;
+                        group.forEach(p => {
+                            const idx = points.indexOf(p);
+                            const x = xPos(idx);
+                            const y = yPos(p.time);
+                            if (firstPoint) {
+                                ctx.moveTo(x, y);
+                                firstPoint = false;
+                            } else {
+                                ctx.lineTo(x, y);
+                            }
+                        });
+                        ctx.stroke();
+
+                        // Dots
+                        group.forEach(p => {
+                            const idx = points.indexOf(p);
+                            ctx.fillStyle = color;
+                            ctx.beginPath();
+                            ctx.arc(xPos(idx), yPos(p.time), 4, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+                            ctx.lineWidth = 1.2;
+                            ctx.stroke();
+                        });
+                    }
+                });
+
+                // Best time reference line
+                const bestTime = Math.min(...times);
+                const bestY = yPos(bestTime);
+                ctx.setLineDash([6, 4]);
+                ctx.strokeStyle = 'rgba(76,175,132,0.6)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(padding.left, bestY);
+                ctx.lineTo(width - padding.right, bestY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = '#4caf84';
+                ctx.font = 'bold 10px "Segoe UI", "PingFang SC", sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText('最佳: ' + formatTime(bestTime), width - padding.right - 100, bestY - 6);
+
+                // Y axis label
+                ctx.fillStyle = '#808090';
+                ctx.font = '10px "Segoe UI", "PingFang SC", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.save();
+                ctx.translate(12, height / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText('完成时间', 0, 0);
+                ctx.restore();
+
+                // X axis label
+                ctx.fillText('记录日期', width / 2, height - 5);
+
+                chartLegend.innerHTML = legendHTML.join('');
+
+                // Legend click handlers
+                chartLegend.querySelectorAll('.legend-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const method = item.dataset.method;
+                        const chip = methodFilters.querySelector(`[data-method="${method}"]`);
+                        if (chip) chip.click();
+                    });
+                });
+            }
+
+            // ==================== EVENT HANDLERS ====================
+            function handleTrigger() {
+                if (timerState === 'idle' || timerState === 'between') {
+                    triggerStart();
+                } else if (timerState === 'running' || timerState === 'countdown') {
+                    stopTimer();
+                } else if (timerState === 'stopped') {
+                    // Check if we should reset
+                    if (currentMode === 'continuous' && continuousCurrent < continuousTotal &&
+                        continuousResults.length < continuousTotal) {
+                        prepareNextContinuousSolve();
+                    } else if (currentMode === 'continuous') {
+                        resetToIdle();
+                        triggerStart();
+                    } else {
+                        resetToIdle();
+                        triggerStart();
+                    }
+                }
+            }
+
+            // Keyboard handler
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' || e.key === ' ') {
+                    e.preventDefault();
+                    if (!spacePressed) {
+                        spacePressed = true;
+                        handleTrigger();
+                    }
+                }
+                // Escape to reset
+                if (e.code === 'Escape') {
+                    e.preventDefault();
+                    if (timerState === 'running' || timerState === 'countdown') {
+                        stopTimer();
+                    }
+                    resetToIdle();
+                    if (currentMode === 'continuous') {
+                        continuousResults = [];
+                        continuousCurrent = 0;
+                    }
+                    showToast('已重置');
+                }
+            });
+
+            document.addEventListener('keyup', (e) => {
+                if (e.code === 'Space' || e.key === ' ') {
+                    spacePressed = false;
+                }
+            });
+
+            // Click handler on timer card
+            timerCard.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleTrigger();
+            });
+
+            // Touch handler for mobile
+            timerCard.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handleTrigger();
+            }, { passive: false });
+
+            // Mode selector
+            modeSelector.addEventListener('click', (e) => {
+                const btn = e.target.closest('.mode-btn');
+                if (!btn) return;
+                const mode = btn.dataset.mode;
+                if (mode === currentMode) return;
+                currentMode = mode;
+                modeSelector.querySelectorAll('.mode-btn').forEach(b => b.classList.remove(
+                    'active'));
+                btn.classList.add('active');
+                resetToIdle();
+                continuousResults = [];
+                continuousCurrent = 0;
+                updateSettingsVisibility();
+                timerHint.textContent = getHintText();
+            });
+
+            function updateSettingsVisibility() {
+                if (currentMode === 'countdown') {
+                    countdownSetting.style.display = 'flex';
+                    continuousSetting.style.display = 'none';
+                } else if (currentMode === 'continuous') {
+                    countdownSetting.style.display = 'none';
+                    continuousSetting.style.display = 'flex';
+                } else {
+                    countdownSetting.style.display = 'none';
+                    continuousSetting.style.display = 'none';
+                }
+            }
+
+            // Observation toggle
+            useObservationCheckbox.addEventListener('change', () => {
+                useObservation = useObservationCheckbox.checked;
+                observationDuration = (parseInt(obsSecondsInput.value) || 15) * 1000;
+                if (useObservation) {
+                    obsToggle.classList.add('active-toggle');
+                } else {
+                    obsToggle.classList.remove('active-toggle');
+                }
+                timerHint.textContent = getHintText();
+            });
+
+            obsSecondsInput.addEventListener('change', () => {
+                observationDuration = (parseInt(obsSecondsInput.value) || 15) * 1000;
+            });
+
+            countdownSecondsInput.addEventListener('change', () => {
+                // Validate
+                const val = parseInt(countdownSecondsInput.value);
+                if (val < 1) countdownSecondsInput.value = 1;
+                if (val > 300) countdownSecondsInput.value = 300;
+            });
+
+            continuousCountInput.addEventListener('change', () => {
+                const val = parseInt(continuousCountInput.value);
+                if (val < 2) continuousCountInput.value = 2;
+                if (val > 50) continuousCountInput.value = 50;
+                continuousTotal = parseInt(continuousCountInput.value) || 5;
+                timerHint.textContent = getHintText();
+            });
+
+            // Tabs
+            tabsEl.addEventListener('click', (e) => {
+                const btn = e.target.closest('.tab-btn');
+                if (!btn) return;
+                const tab = btn.dataset.tab;
+                if (tab === activeTab) return;
+                activeTab = tab;
+                tabsEl.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (tab === 'list') {
+                    listPanel.style.display = '';
+                    chartPanel.style.display = 'none';
+                } else {
+                    listPanel.style.display = 'none';
+                    chartPanel.style.display = '';
+                    setTimeout(drawChart, 100);
+                }
+            });
+
+            // Method filters
+            methodFilters.addEventListener('click', (e) => {
+                const chip = e.target.closest('.filter-chip');
+                if (!chip) return;
+                const method = chip.dataset.method;
+                activeFilter = method;
+                methodFilters.querySelectorAll('.filter-chip').forEach(c => c.classList.remove(
+                'active'));
+                chip.classList.add('active');
+                renderSolves();
+                renderStats();
+                if (activeTab === 'stats') drawChart();
+            });
+
+            // Default method change
+            defaultMethodSelect.addEventListener('change', () => {
+                // Just updates the default for future solves
+            });
+
+            // Window resize for chart
+            let resizeDebounce;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeDebounce);
+                resizeDebounce = setTimeout(() => {
+                    if (activeTab === 'stats') drawChart();
+                }, 300);
+            });
+
+            // ==================== EXPORT ====================
+            window.exportData = function(format) {
+                if (solves.length === 0) {
+                    showToast('没有数据可导出');
+                    return;
+                }
+                if (format === 'csv') {
+                    const headers = ['序号', '完成时间(秒)', '原始时间(ms)', '方法', '模式', '惩罚', '记录时间'];
+                    const rows = solves.map((s, i) => {
+                        const effTime = getEffectiveTime(s);
+                        return [
+                            i + 1,
+                            effTime !== null ? (effTime / 1000).toFixed(2) : 'DNF',
+                            s.time,
+                            s.method,
+                            s.mode,
+                            s.penalty,
+                            s.timestamp,
+                        ];
+                    });
+                    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                    downloadFile('cube_pb_records.csv', '\uFEFF' + csvContent, 'text/csv;charset=utf-8');
+                    showToast('CSV已导出');
+                } else if (format === 'json') {
+                    const jsonStr = JSON.stringify(solves, null, 2);
+                    downloadFile('cube_pb_records.json', jsonStr, 'application/json');
+                    showToast('JSON已导出');
+                }
+            };
+
+            function downloadFile(filename, content, mimeType) {
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            window.clearAllData = function() {
+                if (solves.length === 0) {
+                    showToast('没有数据需要清空');
+                    return;
+                }
+                if (confirm('确定要清空所有复原记录吗？此操作不可恢复！')) {
+                    solves = [];
+                    saveSolves();
+                    renderSolves();
+                    renderStats();
+                    if (activeTab === 'stats') drawChart();
+                    resetToIdle();
+                    showToast('所有记录已清空');
+                }
+            };
+
+            // Expose functions for inline onclick
+            window._applyPenalty = applyPenalty;
+            window._deleteSolve = deleteSolve;
+
+            // ==================== ANIMATION LOOP ====================
+            function animationLoop() {
+                if (timerState === 'countdown' || timerState === 'running') {
+                    updateTimerDisplay();
+                }
+                animFrameId = requestAnimationFrame(animationLoop);
+            }
+
+            // ==================== INIT ====================
+            function init() {
+                updateSettingsVisibility();
+                useObservation = useObservationCheckbox.checked;
+                observationDuration = (parseInt(obsSecondsInput.value) || 15) * 1000;
+                continuousTotal = parseInt(continuousCountInput.value) || 5;
+                if (useObservation) {
+                    obsToggle.classList.add('active-toggle');
+                }
+                timerHint.textContent = getHintText();
+                renderSolves();
+                renderStats();
+                // Start animation loop
+                animFrameId = requestAnimationFrame(animationLoop);
+                // Initial chart will draw when tab is switched
+            }
+
+            init();
+
+            console.log('🧊 魔方个人纪录记录器已就绪');
+            console.log('   - 空格键或点击计时器开始/停止');
+            console.log('   - Esc 键重置');
+            console.log('   - 支持顺计时、倒计时、连续复原三种模式');
+            console.log('   - 数据存储在 localStorage');
+            console.log('   - 支持 CSV/JSON 导出');
+        })();
+    </script>
+</body>
+</html>

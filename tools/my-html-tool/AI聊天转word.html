@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI聊天文字转Word工具（代码块转表格）</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+            gap: 20px;
+        }
+        .input-section, .preview-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2575fc;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            flex: 1;
+        }
+        button:hover {
+            background-color: #1a68e3;
+        }
+        button.secondary {
+            background-color: #6c757d;
+        }
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+        .preview {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+            background-color: #f9f9f9;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .instructions {
+            background-color: #e8f4fd;
+            border-left: 4px solid #2575fc;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        .instructions h3 {
+            color: #2575fc;
+            margin-bottom: 10px;
+        }
+        .instructions ul {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        .formula-example {
+            font-family: monospace;
+            background-color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+        }
+        .user-message, .ai-message {
+            margin-bottom: 15px;
+        }
+        .user-label, .ai-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .user-label {
+            color: #2575fc;
+        }
+        .ai-label {
+            color: #28a745;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+        .preview h1, .preview h2, .preview h3, .preview h4 {
+            color: #2575fc;
+            margin: 15px 0 10px 0;
+            padding-bottom: 5px;
+        }
+        .preview h1 {
+            font-size: 1.8rem;
+            border-bottom: 2px solid #2575fc;
+        }
+        .preview h2 {
+            font-size: 1.6rem;
+            border-bottom: 1px solid #2575fc;
+        }
+        .preview h3 {
+            font-size: 1.4rem;
+        }
+        .preview h4 {
+            font-size: 1.2rem;
+        }
+        /* 普通表格样式 */
+        .preview table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        .preview table th {
+            background-color: #2575fc;
+            color: white;
+            font-weight: bold;
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        .preview table td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .preview table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .preview table tr:hover {
+            background-color: #e8f4fd;
+        }
+        /* 代码块专用表格（深色背景） */
+        .code-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 12px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .code-table .lang-row {
+            background-color: #2d2d2d;
+            color: #569cd6;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            border-bottom: 1px solid #444;
+        }
+        .code-table .code-row {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 10px 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: none;
+        }
+        .code-table .code-row td {
+            border: none;
+            padding: 10px 14px;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI聊天文字转Word工具</h1>
+            <p class="subtitle">代码块转为表格（深色卡片），Word完美显示</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">输入AI聊天内容</h2>
+                <textarea id="inputText" placeholder="请粘贴AI聊天内容到这里..."></textarea>
+                
+                <div class="button-group">
+                    <button id="convertBtn">转换为Word格式</button>
+                    <button id="clearBtn" class="secondary">清空内容</button>
+                </div>
+                
+                <div id="message" class="message"></div>
+                
+                <div class="instructions">
+                    <h3>使用说明</h3>
+                    <ul>
+                        <li>支持Markdown：粗体 <span class="formula-example">**文本**</span>、斜体 <span class="formula-example">*文本*</span></li>
+                        <li>标题：<span class="formula-example"># 一级</span> ～ <span class="formula-example">#### 四级</span></li>
+                        <li>水平分割线：<span class="formula-example">---</span></li>
+                        <li>LaTeX公式：独立 <span class="formula-example">$$公式$$</span>、行内 <span class="formula-example">\(公式\)</span></li>
+                        <li>表格：<span class="formula-example">| 列1 | 列2 |</span> 并用 <span class="formula-example">|------|------|</span> 分隔表头</li>
+                        <li>代码块：<span class="formula-example">```语言&#10;代码内容&#10;```</span> → 自动转为深色表格卡片</li>
+                        <li>点击"转换为Word格式"预览，再点击"下载Word文档"保存</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <h2 class="section-title">预览与下载</h2>
+                <div id="preview" class="preview">
+                    <p>预览区域 - 转换后的内容将显示在这里</p>
+                </div>
+                
+                <button id="downloadBtn" class="secondary" disabled>下载Word文档</button>
+                
+                <div class="instructions">
+                    <h3>代码块表格样式</h3>
+                    <ul>
+                        <li>深色背景 (#1e1e1e) + 浅色文字 (#d4d4d4)</li>
+                        <li>顶部显示语言标签（如 JSON）</li>
+                        <li>保留代码缩进和换行</li>
+                        <li>在Word中显示为美观的卡片</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 AI聊天文字转Word工具 | 代码块以表格卡片形式嵌入Word</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputText = document.getElementById('inputText');
+            const convertBtn = document.getElementById('convertBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const preview = document.getElementById('preview');
+            const message = document.getElementById('message');
+            
+            convertBtn.addEventListener('click', function() {
+                const text = inputText.value.trim();
+                if (!text) {
+                    showMessage('请输入要转换的内容', 'error');
+                    return;
+                }
+                showMessage('正在转换内容...', 'success');
+                setTimeout(function() {
+                    try {
+                        const convertedHTML = convertToWordFormat(text);
+                        preview.innerHTML = convertedHTML;
+                        downloadBtn.disabled = false;
+                        showMessage('转换成功！您现在可以下载Word文档。', 'success');
+                        
+                        if (window.MathJax) {
+                            MathJax.typesetPromise([preview]).catch(function(err) {
+                                console.log('MathJax渲染错误: ' + err.message);
+                            });
+                        }
+                    } catch (error) {
+                        showMessage('转换过程中发生错误: ' + error.message, 'error');
+                        console.error(error);
+                    }
+                }, 100);
+            });
+            
+            clearBtn.addEventListener('click', function() {
+                inputText.value = '';
+                preview.innerHTML = '<p>预览区域 - 转换后的内容将显示在这里</p>';
+                downloadBtn.disabled = true;
+                hideMessage();
+            });
+            
+            downloadBtn.addEventListener('click', function() {
+                const content = preview.innerHTML;
+                downloadAsWord(content);
+            });
+            
+            // ---------- 核心转换函数 ----------
+            function convertToWordFormat(text) {
+                const lines = text.split('\n');
+                let result = '';
+                let inCodeBlock = false;
+                let codeLang = '';
+                let codeLines = [];
+                let i = 0;
+                
+                while (i < lines.length) {
+                    const line = lines[i];
+                    const trimmed = line.trim();
+                    
+                    // 处理代码块
+                    if (trimmed.startsWith('```')) {
+                        if (!inCodeBlock) {
+                            inCodeBlock = true;
+                            const match = trimmed.match(/^```(\w*)/);
+                            codeLang = match ? match[1] : '';
+                            codeLines = [];
+                            i++;
+                            continue;
+                        } else {
+                            inCodeBlock = false;
+                            const codeContent = codeLines.join('\n');
+                            // 生成代码块表格
+                            result += generateCodeTable(codeContent, codeLang);
+                            codeLang = '';
+                            codeLines = [];
+                            i++;
+                            continue;
+                        }
+                    }
+                    
+                    if (inCodeBlock) {
+                        codeLines.push(line);
+                        i++;
+                        continue;
+                    }
+                    
+                    // 检测表格
+                    const isTableRow = /^\s*\|.*\|\s*$/.test(line);
+                    if (isTableRow) {
+                        let tableRows = [];
+                        while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i])) {
+                            tableRows.push(lines[i].trim());
+                            i++;
+                        }
+                        result += parseTable(tableRows);
+                        continue;
+                    }
+                    
+                    // 普通行
+                    if (trimmed === '') {
+                        result += '<br>';
+                        i++;
+                        continue;
+                    }
+                    if (trimmed === '---') {
+                        result += '<hr>';
+                        i++;
+                        continue;
+                    }
+                    if (trimmed.startsWith('# ')) {
+                        result += `<h1>${processInlineFormatting(trimmed.substring(2))}</h1>`;
+                        i++;
+                        continue;
+                    } else if (trimmed.startsWith('## ')) {
+                        result += `<h2>${processInlineFormatting(trimmed.substring(3))}</h2>`;
+                        i++;
+                        continue;
+                    } else if (trimmed.startsWith('### ')) {
+                        result += `<h3>${processInlineFormatting(trimmed.substring(4))}</h3>`;
+                        i++;
+                        continue;
+                    } else if (trimmed.startsWith('#### ')) {
+                        result += `<h4>${processInlineFormatting(trimmed.substring(5))}</h4>`;
+                        i++;
+                        continue;
+                    }
+                    if (trimmed.startsWith('用户：')) {
+                        const content = trimmed.substring(3);
+                        result += `<div class="user-message"><div class="user-label">用户：</div><div>${processInlineFormatting(content)}</div></div>`;
+                        i++;
+                        continue;
+                    } else if (trimmed.startsWith('AI：')) {
+                        const content = trimmed.substring(3);
+                        result += `<div class="ai-message"><div class="ai-label">AI：</div><div>${processInlineFormatting(content)}</div></div>`;
+                        i++;
+                        continue;
+                    } else {
+                        result += `<p>${processInlineFormatting(trimmed)}</p>`;
+                        i++;
+                        continue;
+                    }
+                }
+                
+                // 若代码块未闭合
+                if (inCodeBlock) {
+                    const codeContent = codeLines.join('\n');
+                    result += generateCodeTable(codeContent, codeLang);
+                }
+                
+                return result;
+            }
+            
+            // ---------- 生成代码块表格 ----------
+            function generateCodeTable(code, lang) {
+                // 转义HTML特殊字符
+                const escapedCode = escapeHtml(code);
+                const langLabel = lang ? lang.toUpperCase() : 'CODE';
+                // 构建表格：第一行语言标签，第二行代码
+                return `
+                <table class="code-table">
+                    <tr class="lang-row">
+                        <td colspan="1" style="background-color:#2d2d2d; color:#569cd6; font-weight:bold; font-size:12px; text-transform:uppercase; padding:6px 12px; border-bottom:1px solid #444;">
+                            ${langLabel}
+                        </td>
+                    </tr>
+                    <tr class="code-row">
+                        <td style="background-color:#1e1e1e; color:#d4d4d4; padding:10px 14px; white-space:pre-wrap; word-wrap:break-word; border:none; font-family:Consolas,'Courier New',monospace; font-size:14px;">
+                            ${escapedCode}
+                        </td>
+                    </tr>
+                </table>
+                `;
+            }
+            
+            // ---------- 转义HTML ----------
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // ---------- 解析表格 ----------
+            function parseTable(rows) {
+                if (rows.length === 0) return '';
+                const cellRows = rows.map(row => {
+                    const inner = row.slice(1, -1);
+                    return inner.split('|').map(cell => cell.trim());
+                });
+                const colCount = Math.max(...cellRows.map(r => r.length));
+                const paddedRows = cellRows.map(r => {
+                    while (r.length < colCount) r.push('');
+                    return r;
+                });
+                
+                let headerRow = null;
+                let dataRows = [];
+                let separatorIndex = -1;
+                for (let idx = 0; idx < paddedRows.length; idx++) {
+                    const row = paddedRows[idx];
+                    if (row.every(cell => /^-+$/.test(cell))) {
+                        separatorIndex = idx;
+                        break;
+                    }
+                }
+                if (separatorIndex !== -1) {
+                    if (separatorIndex > 0) headerRow = paddedRows[0];
+                    dataRows = paddedRows.slice(separatorIndex + 1);
+                } else {
+                    dataRows = paddedRows;
+                }
+                
+                let html = '<table>';
+                if (headerRow) {
+                    html += '<thead><tr>';
+                    for (let cell of headerRow) {
+                        html += `<th>${processInlineFormatting(cell)}</th>`;
+                    }
+                    html += '</tr></thead>';
+                }
+                if (dataRows.length > 0) {
+                    html += '<tbody>';
+                    for (let row of dataRows) {
+                        html += '<tr>';
+                        for (let cell of row) {
+                            html += `<td>${processInlineFormatting(cell)}</td>`;
+                        }
+                        html += '</tr>';
+                    }
+                    html += '</tbody>';
+                }
+                html += '</table>';
+                return html;
+            }
+            
+            // ---------- 行内格式化 ----------
+            function processInlineFormatting(text) {
+                let result = text.replace(/`(.*?)`/g, '<code>$1</code>');
+                result = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                result = result.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                return result;
+            }
+            
+            // ---------- 下载Word文档 ----------
+            function downloadAsWord(htmlContent) {
+                showMessage('正在生成Word文档...', 'success');
+                setTimeout(function() {
+                    const fullHtml = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>AI聊天导出</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+                            .user-message, .ai-message { margin-bottom: 15px; }
+                            .user-label, .ai-label { font-weight: bold; margin-bottom: 5px; }
+                            .user-label { color: #2575fc; }
+                            .ai-label { color: #28a745; }
+                            p { margin-bottom: 10px; }
+                            h1, h2, h3, h4 { color: #2575fc; margin: 15px 0 10px 0; padding-bottom: 5px; }
+                            h1 { font-size: 1.8rem; border-bottom: 2px solid #2575fc; }
+                            h2 { font-size: 1.6rem; border-bottom: 1px solid #2575fc; }
+                            h3 { font-size: 1.4rem; }
+                            h4 { font-size: 1.2rem; }
+                            hr { border: 0; height: 1px; background: #ddd; margin: 20px 0; }
+                            code { background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
+                            strong { font-weight: bold; }
+                            em { font-style: italic; }
+                            /* 普通表格 */
+                            table {
+                                border-collapse: collapse;
+                                width: 100%;
+                                margin: 12px 0;
+                                font-size: 14px;
+                            }
+                            table th {
+                                background-color: #2575fc;
+                                color: white;
+                                font-weight: bold;
+                                padding: 8px 12px;
+                                text-align: left;
+                                border: 1px solid #ddd;
+                            }
+                            table td {
+                                padding: 8px 12px;
+                                border: 1px solid #ddd;
+                                text-align: left;
+                            }
+                            table tr:nth-child(even) {
+                                background-color: #f2f2f2;
+                            }
+                            /* 代码块表格 */
+                            .code-table {
+                                border-collapse: collapse;
+                                width: 100%;
+                                margin: 12px 0;
+                                font-family: Consolas, 'Courier New', monospace;
+                                font-size: 14px;
+                                border: 1px solid #444;
+                                border-radius: 6px;
+                                overflow: hidden;
+                            }
+                            .code-table .lang-row td {
+                                background-color: #2d2d2d;
+                                color: #569cd6;
+                                font-weight: bold;
+                                font-size: 12px;
+                                text-transform: uppercase;
+                                padding: 6px 12px;
+                                border-bottom: 1px solid #444;
+                            }
+                            .code-table .code-row td {
+                                background-color: #1e1e1e;
+                                color: #d4d4d4;
+                                padding: 10px 14px;
+                                white-space: pre-wrap;
+                                word-wrap: break-word;
+                                border: none;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${htmlContent}
+                    </body>
+                    </html>
+                    `;
+                    
+                    const blob = new Blob([fullHtml], { type: 'application/msword' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'AI聊天导出.doc';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showMessage('Word文档下载完成！', 'success');
+                }, 500);
+            }
+            
+            function showMessage(text, type) {
+                message.textContent = text;
+                message.className = 'message ' + type;
+                message.style.display = 'block';
+            }
+            function hideMessage() {
+                message.style.display = 'none';
+            }
+            
+            // ---------- 初始化示例内容 ----------
+            inputText.value = `# 编程与数学示例
+
+用户：请用Python写一个计算斐波那契数列的函数。
+
+AI：代码如下：
+
+\`\`\`python
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# 测试
+for i in range(10):
+    print(fibonacci(i))
+\`\`\`
+
+---
+
+## JSON 数据
+
+用户：如何表示一个学生信息？
+
+AI：可以用JSON对象：
+
+\`\`\`json
+{
+  "name": "李华",
+  "age": 18,
+  "courses": ["数学", "物理", "化学"],
+  "address": {
+    "city": "上海",
+    "district": "浦东"
+  }
+}
+\`\`\`
+
+### 表格展示
+
+| 课程 | 成绩 |
+|------|------|
+| 数学 | 95   |
+| 物理 | 88   |
+| 化学 | 92   |
+
+**注意**：代码块已转为深色表格卡片，在Word中完美显示。`;
+        });
+    </script>
+</body>
+</html>
