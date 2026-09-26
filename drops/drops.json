@@ -11,12 +11,6 @@
         "desc":  "笔记-test"
     },
     {
-        "name":  "anything-else.bin",
-        "path":  "drops/anything-else.bin",
-        "size":  "0",
-        "desc":  ""
-    },
-    {
         "name":  "Bandicam（录屏软件，无需安装）.zip",
         "path":  "drops/Bandicam（录屏软件，无需安装）.zip",
         "size":  "35.1 MB",

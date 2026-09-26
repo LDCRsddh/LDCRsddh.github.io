@@ -470,6 +470,160 @@ main{
   background:var(--panel);
 }
 
+/* ===== SHOW 页 ===== */
+.show-tabs{
+  display:flex;
+  gap:10px;
+  margin-top:22px;
+  margin-bottom:22px;
+  flex-wrap:wrap;
+}
+.show-tab{
+  padding:8px 18px;
+  border:1px solid var(--line);
+  background:transparent;
+  color:var(--muted);
+  font-family:inherit;
+  font-size:11px;
+  letter-spacing:.18em;
+  cursor:pointer;
+  transition:all .25s ease;
+}
+.show-tab:hover{
+  color:var(--fg);
+  border-color:var(--accent);
+}
+.show-tab.active{
+  color:var(--accent);
+  border-color:var(--accent);
+  background:rgba(157,184,255,.05);
+}
+
+.masonry{
+  column-count:1;
+  column-gap:12px;
+}
+@media (min-width:520px){ .masonry{ column-count:2; } }
+@media (min-width:820px){ .masonry{ column-count:3; } }
+
+.masonry-item{
+  break-inside:avoid;
+  margin-bottom:12px;
+  position:relative;
+  cursor:zoom-in;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--panel);
+  transition:border-color .25s ease, box-shadow .3s ease;
+}
+.masonry-item:hover{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px var(--accent), 0 6px 24px rgba(0,0,0,.35);
+}
+.masonry-item img{
+  display:block;
+  width:100%;
+  height:auto;
+  transition:transform .5s cubic-bezier(.3,.9,.3,1);
+}
+.masonry-item:hover img{ transform:scale(1.04); }
+
+.record-group{ margin-bottom:38px; }
+.record-group:last-child{ margin-bottom:0; }
+.record-group-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 4px;
+  margin-bottom:16px;
+  border-bottom:1px solid var(--line);
+  cursor:pointer;
+  user-select:none;
+  font-size:12px;
+  letter-spacing:.18em;
+  color:var(--accent);
+  transition:color .25s ease;
+}
+.record-group-head:hover{ color:var(--fg); }
+.record-group-count{
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:.12em;
+}
+.record-group-body{
+  display:grid;
+  grid-template-rows:1fr;
+  transition:grid-template-rows .48s cubic-bezier(.3,.9,.3,1);
+}
+.record-group.folded .record-group-body{
+  grid-template-rows:0fr;
+}
+.record-group-body > .masonry{
+  min-height:0;
+  overflow:hidden;
+  transition:opacity .35s ease;
+}
+.record-group.folded .record-group-body > .masonry{
+  opacity:0;
+}
+
+/* 全屏展示 */
+.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:rgba(0,0,0,.94);
+  overflow:auto;
+  padding:40px;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .3s ease, visibility .3s ease;
+  cursor:grab;
+  user-select:none;
+  -webkit-user-select:none;
+  overscroll-behavior:contain;
+}
+.lightbox.show{
+  opacity:1;
+  visibility:visible;
+}
+.lightbox.dragging{
+  cursor:grabbing;
+}
+.lightbox-inner{
+  min-height:100%;
+  display:flex;
+  align-items:center;      /* 回退 */
+  align-items: safe center; /* 空间不够时贴顶，不被裁 */
+  justify-content:center;
+}
+.lightbox img{
+  display:block;
+  max-width:100%;
+  height:auto;
+  box-shadow:0 0 100px rgba(255,255,255,.08);
+  -webkit-user-drag:none;
+  user-drag:none;
+  pointer-events:none;      /* 让拖动事件落在容器上 */
+}
+.lightbox-hint{
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:10px;
+  letter-spacing:.24em;
+  color:rgba(255,255,255,.4);
+  pointer-events:none;
+  white-space:nowrap;
+}
+
+@media (max-width:680px){
+  .lightbox{ padding:16px; }
+  .show-tab{ padding:7px 14px; font-size:10px; }
+  .lightbox-hint{ font-size:9px; letter-spacing:.16em; }
+}
+
 /* ===== DOC 日期分组 ===== */
 .doc-group-list{
   list-style:none;
@@ -781,6 +935,7 @@ main{
   <button class="nav-item" data-goto="about">ABOUT</button>
   <button class="nav-item" data-goto="doc">DOC</button>
   <button class="nav-item" data-goto="tool">TOOL</button>
+  <button class="nav-item" data-goto="show">SHOW</button>
   <button class="nav-item" data-goto="drop">DROP</button>
 </header>
 
@@ -825,7 +980,7 @@ main{
     <div class="about-sub">CONTACT</div>
     <ul class="list">
       <li class="type-line" data-text="EMAIL     2577steve@qq.com"></li>
-      <li class="type-line" data-text="GITHUB    github.com/Rhys"></li>
+      <li class="type-line" data-text="GITHUB    github.com/LDCRsddh"></li>
       <li class="type-line" data-text="BLOG      your.domain"></li>
     </ul>
   </section>
@@ -875,7 +1030,7 @@ main{
 
   <!-- ========== DROP ========== -->
   <section class="page" data-page="drop">
-    <div class="kicker type-line" data-text="// 05 — DROP"></div>
+    <div class="kicker type-line" data-text="// 06 — DROP"></div>
     <h2 class="title small type-line" data-text="DROP"></h2>
     <div class="rule"></div>
     <ul class="list" id="drop-list">
@@ -887,7 +1042,31 @@ main{
     </div>
   </section>
 
+    <!-- ========== SHOW ========== -->
+  <section class="page" data-page="show">
+    <div class="kicker type-line" data-text="// 05 — SHOW"></div>
+    <h2 class="title small type-line" data-text="SHOWCASE"></h2>
+    <div class="rule"></div>
+
+    <div class="show-tabs">
+      <button class="show-tab active" data-show-tab="wallpaper">WALLPAPER</button>
+      <button class="show-tab" data-show-tab="record">RECORD</button>
+    </div>
+
+    <div class="show-content" id="show-content">
+      <div class="tool-empty" style="border:0;padding-left:0;">正在加载 …</div>
+    </div>
+  </section>
+
 </main>
+
+<!-- 全屏展示 -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <img id="lightbox-img" src="" alt="">
+  </div>
+  <div class="lightbox-hint">单击关闭 · 长图可按住拖动 · ESC 退出</div>
+</div>
 
 <!-- 复制提示 -->
 <div class="copy-toast" id="copy-toast">已记录复制</div>
@@ -2337,6 +2516,164 @@ main{
     next();
   }
 
+    /* =====================================================
+   *   SHOW 数据
+   * ===================================================== */
+  var showData = null;
+  var currentShowTab = 'wallpaper';
+
+  function loadShow() {
+    return fetch('show/show.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('no show.json'); return r.json(); })
+      .then(function (data) { return data || {}; })
+      .catch(function () { return null; });
+  }
+
+  function renderMasonry(images) {
+    if (!images || !images.length) {
+      return '<div class="tool-empty" style="border:0;padding-left:0;">还没有图片。</div>';
+    }
+    return '<div class="masonry">' + images.map(function (img) {
+      var p = escapeAttr(img.path || '');
+      return '<div class="masonry-item" data-src="' + p + '">' +
+               '<img src="' + p + '" loading="lazy" alt="">' +
+             '</div>';
+    }).join('') + '</div>';
+  }
+
+  function renderShow(tab) {
+    var container = $('#show-content');
+    if (!container) return;
+
+    currentShowTab = tab || currentShowTab;
+
+    if (!showData) {
+      container.innerHTML = '<div class="tool-empty">没有找到 show/show.json，' +
+        '请把图片放进 show/wallpaper 或 show/record/游戏名/，再运行 sync.bat。</div>';
+      return;
+    }
+
+    var html = '';
+
+    if (currentShowTab === 'wallpaper') {
+      html = renderMasonry(showData.wallpaper || []);
+
+    } else {
+      var groups = showData.record || [];
+      if (!groups.length) {
+        html = '<div class="tool-empty" style="border:0;padding-left:0;">还没有游戏记录。</div>';
+      } else {
+        groups.forEach(function (group) {
+          html += '<div class="record-group">';
+          html += '<div class="record-group-head">' +
+                    '<span>' + escapeHtml(group.game) + '</span>' +
+                    '<span class="record-group-count">' + (group.images || []).length + ' 张</span>' +
+                  '</div>';
+          html += '<div class="record-group-body">' + renderMasonry(group.images || []) + '</div>';
+          html += '</div>';
+        });
+      }
+    }
+
+    container.innerHTML = html;
+    bindLightbox();
+    bindRecordGroups();
+  }
+
+  function bindRecordGroups() {
+    $$('.record-group-head').forEach(function (head) {
+      head.addEventListener('click', function () {
+        var group = head.parentNode;
+        if (group) group.classList.toggle('folded');
+      });
+    });
+  }
+
+  function bindLightbox() {
+    $$('.masonry-item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        openLightbox(item.dataset.src);
+      });
+    });
+  }
+
+  function openLightbox(src) {
+    var lb = $('#lightbox');
+    var img = $('#lightbox-img');
+    if (!lb || !img || !src) return;
+    img.src = src;
+    lb.scrollTop = 0;
+    lb.scrollLeft = 0;
+    lb.classList.add('show');
+  }
+
+  function closeLightbox() {
+    var lb = $('#lightbox');
+    if (!lb) return;
+    lb.classList.remove('show');
+    lb.classList.remove('dragging');
+    var img = $('#lightbox-img');
+    if (img) img.src = '';
+  }
+
+  /* ===== 拖动平移 ===== */
+  var lightboxEl = $('#lightbox');
+  var isDragging = false;
+  var hasDragged = false;
+  var dragStartX = 0, dragStartY = 0;
+  var scrollStartX = 0, scrollStartY = 0;
+
+  if (lightboxEl) {
+    lightboxEl.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      isDragging = true;
+      hasDragged = false;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      scrollStartX = lightboxEl.scrollLeft;
+      scrollStartY = lightboxEl.scrollTop;
+      lightboxEl.classList.add('dragging');
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!isDragging) return;
+      var dx = e.clientX - dragStartX;
+      var dy = e.clientY - dragStartY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
+      lightboxEl.scrollLeft = scrollStartX - dx;
+      lightboxEl.scrollTop  = scrollStartY - dy;
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (!isDragging) return;
+      isDragging = false;
+      lightboxEl.classList.remove('dragging');
+    });
+
+    lightboxEl.addEventListener('click', function () {
+      if (hasDragged) {
+        hasDragged = false;
+        return;
+      }
+      closeLightbox();
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var tab = e.target.closest('[data-show-tab]');
+    if (tab) {
+      $$('.show-tab').forEach(function (b) { b.classList.remove('active'); });
+      tab.classList.add('active');
+      renderShow(tab.dataset.showTab);
+      return;
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
   /* =====================================================
    *   路由 / 页面切换
    * ===================================================== */
@@ -2362,7 +2699,8 @@ main{
     'doc-detail': 'doc',
     'tool': 'tool',
     'tool-detail': 'tool',
-    'drop': 'drop'
+    'drop': 'drop',
+    'show': 'show'
   };
 
   function setNavActive(name) {
@@ -2408,6 +2746,7 @@ main{
       if (name === 'doc') renderDocList();
       if (name === 'doc-detail') prepareDocDetail(param);
       if (name === 'tool-detail') prepareToolDetail(param);
+      if (name === 'show') renderShow(currentShowTab);
 
       next.classList.add('active');
 
@@ -2452,6 +2791,10 @@ main{
     loadDrops().then(function (list) {
       dropsList = list;
       renderDropList();
+    });
+        loadShow().then(function (data) {
+      showData = data;
+      if (currentName === 'show') renderShow(currentShowTab);
     });
 
     tryLoadAvatar();

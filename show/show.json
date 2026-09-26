@@ -1,0 +1,96 @@
+{
+    "wallpaper":  [
+                      {
+                          "name":  "1790347711648.png",
+                          "path":  "show/wallpaper/1790347711648.png"
+                      },
+                      {
+                          "name":  "1790347780468.png",
+                          "path":  "show/wallpaper/1790347780468.png"
+                      },
+                      {
+                          "name":  "1790347883009.png",
+                          "path":  "show/wallpaper/1790347883009.png"
+                      },
+                      {
+                          "name":  "312cfc7fbbf8a377d560d5f84cd45695483291192.jpg",
+                          "path":  "show/wallpaper/312cfc7fbbf8a377d560d5f84cd45695483291192.jpg"
+                      },
+                      {
+                          "name":  "35199fd710cb503cdbc0b03dc9f7c910483291192.jpg",
+                          "path":  "show/wallpaper/35199fd710cb503cdbc0b03dc9f7c910483291192.jpg"
+                      },
+                      {
+                          "name":  "3ee69f34d5d02a066a4d31cdfb53e2eb483291192.jpg",
+                          "path":  "show/wallpaper/3ee69f34d5d02a066a4d31cdfb53e2eb483291192.jpg"
+                      },
+                      {
+                          "name":  "4ec94867-98fa-4799-8626-52820f509954.png",
+                          "path":  "show/wallpaper/4ec94867-98fa-4799-8626-52820f509954.png"
+                      },
+                      {
+                          "name":  "70a926bc9fccb4531b705c448e2a532d483291192.png",
+                          "path":  "show/wallpaper/70a926bc9fccb4531b705c448e2a532d483291192.png"
+                      },
+                      {
+                          "name":  "767d0c1c7a7a9f4becce280bed714c601954131108.jpg",
+                          "path":  "show/wallpaper/767d0c1c7a7a9f4becce280bed714c601954131108.jpg"
+                      },
+                      {
+                          "name":  "8804e982b075d63b5ecf2246762ca518483291192.png",
+                          "path":  "show/wallpaper/8804e982b075d63b5ecf2246762ca518483291192.png"
+                      },
+                      {
+                          "name":  "aa614133c5ba8decea90de8a1ca53739483291192.jpg",
+                          "path":  "show/wallpaper/aa614133c5ba8decea90de8a1ca53739483291192.jpg"
+                      },
+                      {
+                          "name":  "ba855c894751ec82bfa88b8f0408b7ce483291192.jpg",
+                          "path":  "show/wallpaper/ba855c894751ec82bfa88b8f0408b7ce483291192.jpg"
+                      },
+                      {
+                          "name":  "mmexport7a03742dae16a821693303b0da751da9_1787826121014.png",
+                          "path":  "show/wallpaper/mmexport7a03742dae16a821693303b0da751da9_1787826121014.png"
+                      }
+                  ],
+    "record":  [
+                   {
+                       "game":  "phigros",
+                       "images":  [
+                                      {
+                                          "name":  "Image_1788012774372_162.jpg",
+                                          "path":  "show/record/phigros/Image_1788012774372_162.jpg"
+                                      },
+                                      {
+                                          "name":  "Screenshot_20260828_211555_com.PigeonGames.Phigros.jpg",
+                                          "path":  "show/record/phigros/Screenshot_20260828_211555_com.PigeonGames.Phigros.jpg"
+                                      },
+                                      {
+                                          "name":  "Screenshot_20260831_142202_com.PigeonGames.Phigros.jpg",
+                                          "path":  "show/record/phigros/Screenshot_20260831_142202_com.PigeonGames.Phigros.jpg"
+                                      },
+                                      {
+                                          "name":  "Screenshot_20260925_215641_com.PigeonGames.Phigros.jpg",
+                                          "path":  "show/record/phigros/Screenshot_20260925_215641_com.PigeonGames.Phigros.jpg"
+                                      },
+                                      {
+                                          "name":  "Screenshot_20260925_221501_com.PigeonGames.Phigros.jpg",
+                                          "path":  "show/record/phigros/Screenshot_20260925_221501_com.PigeonGames.Phigros.jpg"
+                                      }
+                                  ]
+                   },
+                   {
+                       "game":  "明日方舟",
+                       "images":  [
+                                      {
+                                          "name":  "Screenshot_20260905_192615_com.hypergryph.arknights.jpg",
+                                          "path":  "show/record/明日方舟/Screenshot_20260905_192615_com.hypergryph.arknights.jpg"
+                                      },
+                                      {
+                                          "name":  "屏幕截图 2026-09-08 175407.png",
+                                          "path":  "show/record/明日方舟/屏幕截图 2026-09-08 175407.png"
+                                      }
+                                  ]
+                   }
+               ]
+}
