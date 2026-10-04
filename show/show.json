@@ -13,6 +13,14 @@
                           "path":  "show/wallpaper/1790347883009.png"
                       },
                       {
+                          "name":  "1790781588130.png",
+                          "path":  "show/wallpaper/1790781588130.png"
+                      },
+                      {
+                          "name":  "1790929963114.png",
+                          "path":  "show/wallpaper/1790929963114.png"
+                      },
+                      {
                           "name":  "312cfc7fbbf8a377d560d5f84cd45695483291192.jpg",
                           "path":  "show/wallpaper/312cfc7fbbf8a377d560d5f84cd45695483291192.jpg"
                       },
@@ -27,6 +35,10 @@
                       {
                           "name":  "4ec94867-98fa-4799-8626-52820f509954.png",
                           "path":  "show/wallpaper/4ec94867-98fa-4799-8626-52820f509954.png"
+                      },
+                      {
+                          "name":  "555deeceeb6b54ff58812bed40e1ff156139180a.png",
+                          "path":  "show/wallpaper/555deeceeb6b54ff58812bed40e1ff156139180a.png"
                       },
                       {
                           "name":  "70a926bc9fccb4531b705c448e2a532d483291192.png",
@@ -49,6 +61,10 @@
                           "path":  "show/wallpaper/ba855c894751ec82bfa88b8f0408b7ce483291192.jpg"
                       },
                       {
+                          "name":  "Image_1790937157739_350.png",
+                          "path":  "show/wallpaper/Image_1790937157739_350.png"
+                      },
+                      {
                           "name":  "mmexport7a03742dae16a821693303b0da751da9_1787826121014.png",
                           "path":  "show/wallpaper/mmexport7a03742dae16a821693303b0da751da9_1787826121014.png"
                       }
@@ -58,8 +74,16 @@
                        "game":  "phigros",
                        "images":  [
                                       {
+                                          "name":  "0d289e8227f1911539a9ea84454461943493103818246458.jpg",
+                                          "path":  "show/record/phigros/0d289e8227f1911539a9ea84454461943493103818246458.jpg"
+                                      },
+                                      {
                                           "name":  "Image_1788012774372_162.jpg",
                                           "path":  "show/record/phigros/Image_1788012774372_162.jpg"
+                                      },
+                                      {
+                                          "name":  "Image_1790415712824_789.jpg",
+                                          "path":  "show/record/phigros/Image_1790415712824_789.jpg"
                                       },
                                       {
                                           "name":  "Screenshot_20260828_211555_com.PigeonGames.Phigros.jpg",
@@ -76,6 +100,14 @@
                                       {
                                           "name":  "Screenshot_20260925_221501_com.PigeonGames.Phigros.jpg",
                                           "path":  "show/record/phigros/Screenshot_20260925_221501_com.PigeonGames.Phigros.jpg"
+                                      },
+                                      {
+                                          "name":  "Screenshot_20261002_211456_com.PigeonGames.Phigros.jpg",
+                                          "path":  "show/record/phigros/Screenshot_20261002_211456_com.PigeonGames.Phigros.jpg"
+                                      },
+                                      {
+                                          "name":  "Screenshot_20261002_211719_com.PigeonGames.Phigros.jpg",
+                                          "path":  "show/record/phigros/Screenshot_20261002_211719_com.PigeonGames.Phigros.jpg"
                                       }
                                   ]
                    },
@@ -89,6 +121,19 @@
                                       {
                                           "name":  "屏幕截图 2026-09-08 175407.png",
                                           "path":  "show/record/明日方舟/屏幕截图 2026-09-08 175407.png"
+                                      }
+                                  ]
+                   },
+                   {
+                       "game":  "蔚蓝档案",
+                       "images":  [
+                                      {
+                                          "name":  "Screenshot_2026_1004_204259_com.RoamingStar.BlueArchive.bilibili.jpg",
+                                          "path":  "show/record/蔚蓝档案/Screenshot_2026_1004_204259_com.RoamingStar.BlueArchive.bilibili.jpg"
+                                      },
+                                      {
+                                          "name":  "Screenshot_2026_1004_204416_com.RoamingStar.BlueArchive.bilibili.jpg",
+                                          "path":  "show/record/蔚蓝档案/Screenshot_2026_1004_204416_com.RoamingStar.BlueArchive.bilibili.jpg"
                                       }
                                   ]
                    }

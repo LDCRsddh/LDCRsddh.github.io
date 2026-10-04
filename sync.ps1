@@ -141,6 +141,12 @@ function Scan-Docs {
             continue
         }
 
+        $tagsRaw = Ask-Text "  ±Í«©£®∂∫∫≈∑÷∏Ù£¨ø…¡Ùø’£©" ''
+        $tags = @()
+        if (-not [string]::IsNullOrWhiteSpace($tagsRaw)) {
+            $tags = $tagsRaw -split '[,\uFF0C]' | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+        }
+
         $entry = [ordered]@{
             id    = $id
             title = $title
@@ -148,6 +154,7 @@ function Scan-Docs {
             date  = $date
             issue = $null
             desc  = $desc
+            tags  = $tags
         }
 
         $existing += [pscustomobject]$entry
