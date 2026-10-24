@@ -1109,6 +1109,28 @@ main::-webkit-scrollbar{
   color: var(--muted);
 }
 
+.work-detail-content {
+  margin-top: 22px;
+  animation: docIn .55s ease .15s both;
+}
+.work-detail-cover {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: rgba(0,0,0,.2);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+.work-detail-desc {
+  font-size: clamp(13px, 1.5vw, 15px);
+  line-height: 1.85;
+  color: var(--fg);
+  margin-bottom: 30px;
+  white-space: pre-wrap;
+  letter-spacing: .04em;
+}
+
 /* ============ 响应式 ============ */
 @media (max-width:680px){
   .nav{ top:16px; right:12px; gap:10px; }
@@ -1266,36 +1288,23 @@ main::-webkit-scrollbar{
   </section>
 
     <!-- ========== SHOW (WORKS) ========== -->
-  <section class="page" data-page="show">
+   <section class="page" data-page="show">
     <div class="kicker type-line" data-text="// 06 — SHOW"></div>
     <h2 class="title small type-line" data-text="WORKS"></h2>
     <div class="rule"></div>
 
-    <div class="project-grid">
-      <!-- 作品 1 -->
-      <a href="#" target="_blank" rel="noopener" class="project-card">
-        <div class="project-cover" style="background-image:url('show/cover/favicon.png');"></div>
-        <div class="project-info">
-          <div class="project-title">Project Alpha</div>
-          <div class="project-desc">一个独立游戏 / 2027</div>
-        </div>
-      </a>
-      <!-- 作品 2 -->
-      <a href="https://release-assets.githubusercontent.com/github-production-release-asset/1388339549/230a08b0-611f-497a-b8f7-8fb7bad15938?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-24T06%3A07%3A08Z&rscd=attachment%3B+filename%3Djl-1.0.0-r60.jar&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-24T05%3A06%3A47Z&ske=2026-10-24T06%3A07%3A08Z&sks=b&skv=2018-11-09&sig=GhQZkh8po5iXt16toiL1%2FYykL5%2BdwQeggSyWm8SpFw4%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MjgxOTc0NywibmJmIjoxNzkyODE5NDQ3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.92D4nZNr-XRtno5dZSXXtSbqx35YRy7meeQV30rfUns&response-content-disposition=attachment%3B%20filename%3Djl-1.0.0-r60.jar&response-content-type=application%2Foctet-stream" target="_blank" rel="noopener" class="project-card">
-        <div class="project-cover" style="background-image:url('show/cover/1.png');"></div>
-        <div class="project-info">
-          <div class="project-title">JianLai Mod</div>
-          <div class="project-desc">minecraft个人游戏模组 / 2026</div>
-        </div>
-      </a>
-      <!-- 作品 3 -->
-      <a href="https://release-assets.githubusercontent.com/github-production-release-asset/1388339549/1ab2d8a4-70ce-464a-a66b-6008e5022ffb?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-24T05%3A43%3A48Z&rscd=attachment%3B+filename%3DRhysUsebox-Setup-4.1.0.exe&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-24T04%3A43%3A44Z&ske=2026-10-24T05%3A43%3A48Z&sks=b&skv=2018-11-09&sig=F8dxezQ2vGAmk6yUKQ%2F645w4RxjGKuHqpGoFx9cnpzE%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MjgxOTAwNCwibmJmIjoxNzkyODE3MjA0LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.lzVe42vCXISJU9IgSA7LxC9liUX6A8-DwfCXHIIQhEw&response-content-disposition=attachment%3B%20filename%3DRhysUsebox-Setup-4.1.0.exe&response-content-type=application%2Foctet-stream" target="_blank" rel="noopener" class="project-card">
-        <div class="project-cover" style="background-image:url('show/cover/favicon.png');"></div>
-        <div class="project-info">
-          <div class="project-title">Rhys Usebox</div>
-          <div class="project-desc">效率小工具 / 2026</div>
-        </div>
-      </a>
+    <!-- 由 JS 动态渲染 -->
+    <div class="project-grid" id="work-grid"></div>
+  </section>
+
+    <!-- ========== WORK DETAIL ========== -->
+  <section class="page" data-page="work-detail">
+    <button class="back-btn" data-back="show">← BACK TO WORKS</button>
+    <div class="kicker type-line" data-text=""></div>
+    <h2 class="title small type-line" data-text=""></h2>
+    <div class="rule"></div>
+    <div class="work-detail-content" id="work-detail-content">
+      <!-- 动态加载 -->
     </div>
   </section>
 
@@ -1847,6 +1856,8 @@ main::-webkit-scrollbar{
     if (dc) dc.innerHTML = '';
     var cm = page.querySelector('.doc-copy-meta');
     if (cm) cm.textContent = '';
+    var wc = page.querySelector('#work-detail-content'); // 新增
+    if (wc) wc.innerHTML = '';
   }
 
   /* ================= 首页循环小字 ================= */
@@ -2785,6 +2796,11 @@ main::-webkit-scrollbar{
       renderDocList();
       return;
     }
+    var workCard = e.target.closest('.project-card[data-work]');
+    if (workCard) {
+      goTo('work-detail', workCard.dataset.work);
+      return;
+    }
     var tsBtn = e.target.closest('[data-ts]');
     if (tsBtn) { handleTimestamp(tsBtn.dataset.ts); return; }
 
@@ -2800,6 +2816,94 @@ main::-webkit-scrollbar{
   document.addEventListener('input', function (e) {
     if (e.target && e.target.id === 'count-input') updateCount();
   });
+
+    /* =====================================================
+   *   作品展示数据
+   * ===================================================== */
+  var WORKS = [
+    {
+      id: 'project-alpha',
+      title: 'Project Alpha',
+      desc: '一个独立游戏 / 2027',
+      cover: 'show/cover/favicon.png', 
+      longDesc: '这里是 Project Alpha 的详细说明。\n\n可以写游戏的核心玩法、开发历程、使用的引擎等。',
+      downloadUrl: '#' // 没有下载链接就留空或写 '#'
+    },
+    {
+      id: 'JianLai Mod',
+      title: 'JianLai Mod',
+      desc: 'minecraft个人游戏模组 / 2026',
+      cover: 'show/cover/1.png',
+      longDesc: '这里是 Mod Beta 的详细说明。',
+      downloadUrl: 'https://github.com/LDCRsddh/LDCRsddh.github.io/releases/tag/JianLaiMod'
+    },
+    {
+      id: 'rhys-usebox',
+      title: 'Rhys Usebox',
+      desc: '效率小工具 / 2026',
+      cover: 'show/cover/favicon.png', // 确保路径正确
+      longDesc: 'Rhys Usebox 是一个专注于提升效率的小工具集合。\n\n包含快速启动、剪贴板管理等功能。',
+      downloadUrl: 'https://github.com/LDCRsddh/LDCRsddh.github.io/releases/tag/RhysUsebox' // 建议改为固定页面链接
+    }
+  ];
+
+  function renderWorkList() {
+    var grid = $('#work-grid');
+    if (!grid) return;
+
+    var html = '';
+    WORKS.forEach(function (w) {
+      var coverStyle = w.cover ? 'background-image:url(\'' + escapeAttr(w.cover) + '\');' : '';
+      html += '<div class="project-card" data-work="' + w.id + '">' +
+                '<div class="project-cover" style="' + coverStyle + '"></div>' +
+                '<div class="project-info">' +
+                  '<div class="project-title">' + escapeHtml(w.title) + '</div>' +
+                  '<div class="project-desc">' + escapeHtml(w.desc) + '</div>' +
+                '</div>' +
+              '</div>';
+    });
+    grid.innerHTML = html;
+  }
+
+  function findWork(id) {
+    for (var i = 0; i < WORKS.length; i++) {
+      if (WORKS[i].id === id) return WORKS[i];
+    }
+    return null;
+  }
+
+  function prepareWorkDetail(id) {
+    var work = findWork(id);
+    var page = $('[data-page="work-detail"]');
+    var kickerEl = page.querySelector('.kicker');
+    var titleEl = page.querySelector('.title');
+    var contentEl = page.querySelector('#work-detail-content');
+
+    if (!work) {
+      kickerEl.dataset.text = '// WORK — NOT FOUND';
+      titleEl.dataset.text = 'NOT FOUND';
+      contentEl.innerHTML = '<p class="doc-error">未找到该作品。</p>';
+      return;
+    }
+
+    kickerEl.dataset.text = '// WORK — ' + work.title;
+    titleEl.dataset.text = work.title;
+
+    var html = '';
+    if (work.cover) {
+      html += '<div class="work-detail-cover" style="background-image:url(\'' + escapeAttr(work.cover) + '\');"></div>';
+    }
+    
+    html += '<div class="work-detail-desc">' + escapeHtml(work.longDesc || work.desc) + '</div>';
+    
+    if (work.downloadUrl && work.downloadUrl !== '#') {
+      html += '<div class="tool-actions" style="margin-bottom:0;">' +
+                '<a class="tool-btn" href="' + escapeAttr(work.downloadUrl) + '" target="_blank" rel="noopener">前往下载 / 访问</a>' +
+              '</div>';
+    }
+    
+    contentEl.innerHTML = html;
+  }
 
   /* =====================================================
    *   头像加载
@@ -3167,7 +3271,8 @@ main::-webkit-scrollbar{
     'tool-detail': 'tool',
     'drop': 'drop',
     'pics': 'pics',
-    'show': 'show'
+    'show': 'show',
+    'work-detail': 'show' // 使点击 SHOW 时导航保持高亮
   };
 
   function setNavActive(name) {
@@ -3214,6 +3319,7 @@ main::-webkit-scrollbar{
       if (name === 'doc-detail') prepareDocDetail(param);
       if (name === 'tool-detail') prepareToolDetail(param);
       if (name === 'pics') renderShow(currentShowTab); // 原来这里是 show
+      if (name === 'work-detail') prepareWorkDetail(param);
 
 
       next.classList.add('active');
@@ -3265,7 +3371,7 @@ main::-webkit-scrollbar{
       showData = data;
       if (currentName === 'pics') renderShow(currentShowTab);
     });
-
+    renderWorkList();
     tryLoadAvatar();
     initCustomScrollbar();
 
