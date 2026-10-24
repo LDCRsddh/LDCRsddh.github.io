@@ -363,16 +363,16 @@ function Scan-Drops {
     }
 }
 
-# ---------- 扫描 show ----------
-function Scan-Show {
+# ---------- 扫描 pics ----------
+function Scan-Pics {
     Write-Host ""
-    Write-Host "==> 检查 show/ 下的图片" -ForegroundColor Cyan
+    Write-Host "==> 检查 pics/ 下的图片" -ForegroundColor Cyan
 
-    $ShowDir  = Join-Path $Root 'show'
-    $ShowJson = Join-Path $ShowDir 'show.json'
+    $PicsDir  = Join-Path $Root 'pics'
+    $PicsJson = Join-Path $PicsDir 'pics.json'
 
-    if (-not (Test-Path $ShowDir)) {
-        Write-Host "    没有 show/ 目录，跳过" -ForegroundColor DarkGray
+    if (-not (Test-Path $PicsDir)) {
+        Write-Host "    没有 pics/ 目录，跳过" -ForegroundColor DarkGray
         return
     }
 
@@ -380,21 +380,21 @@ function Scan-Show {
 
     # wallpaper
     $wallpapers = @()
-    $wallpaperDir = Join-Path $ShowDir 'wallpaper'
+    $wallpaperDir = Join-Path $PicsDir 'wallpaper'
     if (Test-Path $wallpaperDir) {
         Get-ChildItem -Path $wallpaperDir -File | Where-Object {
             $imageExts -contains $_.Extension.ToLowerInvariant()
         } | Sort-Object Name | ForEach-Object {
             $wallpapers += [ordered]@{
                 name = $_.Name
-                path = "show/wallpaper/$($_.Name)"
+                path = "pics/wallpaper/$($_.Name)"
             }
         }
     }
 
     # record（每个子文件夹是一个游戏）
     $records = @()
-    $recordDir = Join-Path $ShowDir 'record'
+    $recordDir = Join-Path $PicsDir 'record'
     if (Test-Path $recordDir) {
         Get-ChildItem -Path $recordDir -Directory | Sort-Object Name | ForEach-Object {
             $gameFolder = $_
@@ -404,7 +404,7 @@ function Scan-Show {
             } | Sort-Object Name | ForEach-Object {
                 $images += [ordered]@{
                     name = $_.Name
-                    path = "show/record/$($gameFolder.Name)/$($_.Name)"
+                    path = "pics/record/$($gameFolder.Name)/$($_.Name)"
                 }
             }
             if ($images.Count -gt 0) {
@@ -425,8 +425,8 @@ function Scan-Show {
 
     $json = ConvertTo-Json -InputObject $data -Depth 10
     $utf8 = New-Object System.Text.UTF8Encoding($false)
-    [System.IO.File]::WriteAllText($ShowJson, $json, $utf8)
-    Write-Host ("    写入 {0}" -f $ShowJson) -ForegroundColor Green
+    [System.IO.File]::WriteAllText($PicsJson, $json, $utf8)
+    Write-Host ("    写入 {0}" -f $PicsJson) -ForegroundColor Green
 }
 
 # ---------- 主流程 ----------
@@ -436,7 +436,7 @@ Write-Host ("  根目录：{0}" -f $Root) -ForegroundColor DarkGray
 Scan-Docs
 Scan-Tools
 Scan-Drops
-Scan-Show
+Scan-Pics
 
 Write-Host ""
 Write-Host "完成。" -ForegroundColor Magenta
