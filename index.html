@@ -285,6 +285,75 @@ main::-webkit-scrollbar{
   transform: translateX(6px);
 }
 
+/* ===== 返回顶部按钮 ===== */
+.back-to-top {
+  position: fixed;
+  right: 38px;
+  bottom: 38px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 40;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s cubic-bezier(0.3, 0.9, 0.3, 1);
+}
+
+.back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--panel);
+}
+
+@media (max-width: 680px) {
+  .back-to-top {
+    right: 14px;
+    bottom: 24px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+/* ===== 字体加载提示 ===== */
+.font-loading-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 10px 20px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.3, 0.9, 0.3, 1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.font-loading-toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* ===== 返回按钮 ===== */
 .back-btn{
   position:relative;
@@ -1325,6 +1394,12 @@ main::-webkit-scrollbar{
 
 <!-- 复制提示 -->
 <div class="copy-toast" id="copy-toast">已记录复制</div>
+
+<!-- 返回顶部按钮 -->
+<div class="back-to-top" id="back-to-top">↑</div>
+
+<!-- 字体加载提示 -->
+<div class="font-loading-toast" id="font-loading-toast">网站字体未加载完成，请稍等</div>
 
 <script>
 (function () {
@@ -2919,6 +2994,54 @@ main::-webkit-scrollbar{
     contentEl.innerHTML = html;
   }
 
+    /* =====================================================
+   *   返回顶部按钮逻辑
+   * ===================================================== */
+  var backToTopBtn = $('#back-to-top');
+  
+  if (backToTopBtn) {
+    // 监听滚动，控制按钮显示/隐藏
+    mainEl.addEventListener('scroll', function () {
+      if (mainEl.scrollTop > 200) {
+        backToTopBtn.classList.add('show');
+      } else {
+        backToTopBtn.classList.remove('show');
+      }
+    }, { passive: true });
+
+    // 点击平滑回到顶部
+    backToTopBtn.addEventListener('click', function () {
+      mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  /* =====================================================
+   *   字体加载提示逻辑
+   * ===================================================== */
+  function checkFontLoading() {
+    var toastEl = $('#font-loading-toast');
+    if (!toastEl) return;
+
+    // 延迟 300ms 显示提示，避免网速极快时一闪而过
+    var timer = setTimeout(function () {
+      toastEl.classList.add('show');
+    }, 300);
+
+    // 使用 document.fonts.ready API 等待字体加载
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        clearTimeout(timer);
+        toastEl.classList.remove('show');
+      });
+    } else {
+      // 兼容极旧浏览器，2秒后不管怎样都隐藏
+      setTimeout(function () {
+        clearTimeout(timer);
+        toastEl.classList.remove('show');
+      }, 2000);
+    }
+  }
+
   /* =====================================================
    *   头像加载
    * ===================================================== */
@@ -3390,6 +3513,7 @@ main::-webkit-scrollbar{
     });
     renderWorkList();
     tryLoadAvatar();
+    checkFontLoading();
     initCustomScrollbar();
 
     setTimeout(function () {
