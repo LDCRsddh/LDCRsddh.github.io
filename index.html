@@ -1846,7 +1846,7 @@ main::-webkit-scrollbar{
     return chain;
   }
 
-  function clearPage(page) {
+    function clearPage(page) {
     if (!page) return;
     $$('.type-line', page).forEach(function (el) {
       el.textContent = '';
@@ -1856,8 +1856,22 @@ main::-webkit-scrollbar{
     if (dc) dc.innerHTML = '';
     var cm = page.querySelector('.doc-copy-meta');
     if (cm) cm.textContent = '';
-    var wc = page.querySelector('#work-detail-content'); // 新增
+    var wc = page.querySelector('#work-detail-content');
     if (wc) wc.innerHTML = '';
+    
+    var dynamicContainers = [
+      '#doc-list', 
+      '#doc-tags', 
+      '#tool-list', 
+      '#drop-list', 
+      '#show-content', 
+      '#work-grid'
+    ];
+    dynamicContainers.forEach(function (sel) {
+      var el = page.querySelector(sel);
+      if (el) el.innerHTML = '';
+    });
+    // =========================================
   }
 
   /* ================= 首页循环小字 ================= */
@@ -3298,7 +3312,10 @@ main::-webkit-scrollbar{
     var outPromise = (mode === 'wipe') ? wipeOutPage(prev) : typeOutPage(prev);
 
     outPromise.then(function () {
-      if (prev) prev.classList.remove('active');
+      if (prev) {
+        prev.classList.remove('active');
+        clearPage(prev);
+      }
       taglineEl.textContent = '';
       taglineEl.classList.remove('typing');
 
